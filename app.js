@@ -10,7 +10,6 @@ var mongoose = require('mongoose');
 var index = require('./routes/index');
 var cors = require("cors")
 var app = express();
-var socketIO = require("socket.io")
 var http = require("http");
 // var Users = require("./users")
 mongoose.Promise = global.Promise
@@ -38,8 +37,5 @@ app.use('/', index);
 app.get('*',function(req, res){
   res.sendFile(path.join(__dirname,"build/index.html"))
 }); 
-var server = http.createServer(app);
-var io = socketIO(server);
-require('./socket/socket')(io)
-server.listen(process.env.PORT || 3006,()=>console.log("Server running on port 3006"));
+app.listen(process.env.PORT || 4000,()=>console.log("Server running on port 4000"));
 module.exports = app;

@@ -4,65 +4,51 @@ var userSchema = mongoose.Schema({
     fullName: {
         type: String,
     },
-    status: {
+    username: {
         type: String,
-        default: "Be good at all times."
     },
     password: {
         type: String,
     },
+    role:{
+        type: String
+    },
     location: {
         type: String,
     },
-    age:{
+    phone:{
         type:String
-    },
-    interest:[String],
-    knowledge:[String],
-    languages:[String],
-    skillset:[String],
-    gender: {
-        type: String,
-    },
-    about: {
-        type: String,
     },
     dpUrl: {
         type: String
     },
-    bgUrl: {
-        type: String
+    twitter:{
+        type:String
+    },
+    facebook:{
+        type:String
+    },
+    description:{
+        type:String
     },
     email: {
         type: String,
         trim: true
     },
-    date: {
+    regDate: {
         type: Date,
         default: Date.now
-    },
-    views: {
-        type: Number,
-        default: 0
-    },
-    username: {
-        type: String,
-    },
-    phone: {
-        type: String
-    },
-    dob: {
-        type: String
     },
     country: {
         type: String
     },
-    privacy:{
-        type: String,
-        default: "public"
+    creatorID:{
+        type: mongoose.SchemaTypes.ObjectId,
+        ref:"users"
     }
+   
 })
-userSchema.index({knowledge:'text',interest:'text',languages:'text',skillset:'text', username: 'text', location:"text"});
+userSchema.index({ username: 'text', location:"text", fullName:"text"});
 var User = mongoose.model('users', userSchema);
 
 module.exports = User;
