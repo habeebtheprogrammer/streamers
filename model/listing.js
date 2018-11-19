@@ -20,10 +20,19 @@ var listingSchema = mongoose.Schema({
     description:{
         type:String
     },
+    region:{
+        type:String
+    },
+    country:{
+        type:String
+    },
     city:{
         type:String
     },
     location:{
+        type:String
+    },
+    gmapLink:{
         type:String
     },
     cancellation:{
@@ -93,9 +102,13 @@ var listingSchema = mongoose.Schema({
    views:{
        type:Number,
        default:0
-   }
+   },
+   date: {
+    type: Date,
+    default: Date.now
+}
 })
-listingSchema.index({ title: 'text', location:'text', city:'text' });
+listingSchema.index({ title: 'text', location:'text', city:'text',country:'text' });
 var Listing = mongoose.model('listing', listingSchema);
 
 module.exports = Listing;

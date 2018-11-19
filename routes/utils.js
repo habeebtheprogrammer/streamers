@@ -9,6 +9,8 @@ utils.filterData = function (req){
     if(req.body.openingHours) data.openingHours = req.body.openingHours
     if(req.body.packageOption) data.packageOption = req.body.packageOption
     if(req.body.city) data.city = req.body.city
+    if(req.body.region) data.region = req.body.region
+    if(req.body.country) data.country = req.body.country
     if(req.body.location) data.location = req.body.location
     if(req.body.activityInfo) data.activityInfo = req.body.activityInfo
     if(req.body.openDate) data.openDate = req.body.openDate
@@ -29,6 +31,8 @@ utils.filterData = function (req){
     attraction.openingHours &&
     attraction.packageOption &&
     attraction.city &&
+    attraction.region  &&
+    attraction.country &&
     attraction.location &&
     attraction.activityInfo &&
     (attraction.openDate ===true||attraction.openDate===false) &&

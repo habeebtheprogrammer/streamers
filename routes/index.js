@@ -4,6 +4,9 @@ var bcrypt = require('bcrypt');
 var User = require('../model/userModel');
 var Newsletter = require('../model/newsletter');
 var Listing = require('../model/listing')
+var Region = require('../model/regions')
+var Country = require('../model/country')
+var City = require('../model/cities')
 var moment = require('moment')
 var generator = require("generate-password")
 var jwt = require('jsonwebtoken');
@@ -30,7 +33,35 @@ function auth(req,res,next){
 
   
 }
-
+router.post('/api/signin', function (req, res, next) {
+  var { username, password } = req.body;
+  var error = {}
+  if (username == "") error.username = "This field is required";
+  if (password == "") error.password = "This field is required";
+  if (error.password || error.username) {
+    return res.json({ "error": error })
+  }
+  var data = {
+    username: username
+  }
+  User.findOne({
+    username: username,role:"admin"
+  }).then((user) => {
+    if (user) {
+      data.id = user._id
+        data.username = username
+        bcrypt.compare(password, user.password).then((valid) => {
+          if (valid) {
+            var token = jwt.sign(data, "t1z2o3o4r5").toString();
+            res.header('x-auth', token).json({ "token": token });
+          } else res.json({ "error":  "Please enter a valid username/password", "password": "incorrect password"  })
+        }).catch((error) => (console.log(error)));
+    } 
+    else {
+      res.json({ "error": "Please enter a valid username/password" })
+    }
+  }).catch((err)=>cres.json({ "error": "Please enter a valid username/password" }))
+})
 //user login route
 router.post('/api/login', function (req, res, next) {
   var { username, password } = req.body;
@@ -134,12 +165,40 @@ router.get("/api/getProfile",auth,(req,res)=>{
   })
 })
 router.get("/api/getAttractionById",auth,(req,res)=>{
-  Listing.findById(req.query.id).then((attraction)=>{
+  Listing.findById(req.query.id).populate("creatorID").exec().then((attraction)=>{
     if(attraction){
       res.json({attraction})
     }
     else res.json({error:"An error has occured. please try again later"})
   })
+})
+router.get("/api/mostRecentAttraction",auth,(req,res)=>{
+  Listing.find({completed:true}).sort({id:-1}).limit(4).populate("creatorID").exec().then((attractions)=>{
+    if(attractions){
+      res.json({attractions})
+    }
+    else res.json({error:"An error has occured. please try again later"})
+  })
+})
+router.get("/api/topSellers",auth,(req,res)=>{
+  User.find({role:"merchant"}).sort({views:-1}).limit(4).then((merchants)=>{
+    if(merchants){
+      res.json({merchants})
+    }
+    else res.json({error:"An error has occured. please try again later"})
+  })
+})
+router.get("/api/activityLog",auth,(req,res)=>{
+  var data =[]
+  User.find().sort({date:-1}).limit(4).then((users)=>{
+     data =data.concat(users)
+     Listing.find({completed:true}).sort({date:-1}).limit(4).populate("creatorID").exec().then((attractions)=>{
+      data = data.concat(attractions);
+      res.json({data})
+
+    })
+  })
+
 })
 router.post("/api/deleteUser",auth,(req,res)=>{
   User.findOneAndRemove({creatorID:req.userID,username:req.body.username}).then((user)=>{
@@ -165,8 +224,70 @@ router.get("/api/getUsersByMerchant",auth,(req,res)=>{
     else res.json({error:"An error has occured. please try again later"})
   })
 })
+.get("/api/search", (req, res, next) => {
+  var results =[]
+    User.find({ $text: { $search: req.query.query }}, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } }).then((data) => { 
+      results = results.concat(data);
+      Listing.find({ $text: { $search: req.query.query }}, { score: { $meta: 'textScore' } }).sort({ score: { $meta: 'textScore' } }).then((lists) => { 
+        results = results.concat(lists);
+        res.json({results})
+      }).catch((err)=>console.log(err))
+    }).catch((err)=>console.log(err))
+})
+router.get("/api/getRegions",auth,(req,res)=>{
+  Region.find().then((regions)=>{
+    if(regions){
+      res.json({regions})
+    }
+  })
+})
+router.get("/api/getCountries",auth,(req,res)=>{
+  Country.find().then((countries)=>{
+    if(countries){
+      res.json({countries})
+    }
+  })
+})
+router.get("/api/getCountriesByRegion",auth,(req,res)=>{
+  Country.find({regionID:req.query.regionID}).then((countries)=>{
+    if(countries){
+      res.json({countries})
+    }
+  })
+})
+router.get("/api/getCitiesByCountry",auth,(req,res)=>{
+  City.find({countryID:req.query.countryID}).then((cities)=>{
+    if(cities){
+      res.json({cities})
+    }
+  })
+})
+router.get("/api/getUsers",auth,(req,res)=>{
+  User.find().then((users)=>{
+    if(users){
+      res.json({users})
+    }
+    else res.json({error:"An error has occured. please try again later"})
+  })
+})
+router.get("/api/getMerchants",auth,(req,res)=>{
+  User.find({role:"merchant"}).then((merchants)=>{
+    if(merchants){
+      res.json({merchants})
+    }
+    else res.json({error:"An error has occured. please try again later"})
+  })
+})
 router.get("/api/getProfileById",auth,(req,res)=>{
   User.findOne({creatorID:req.userID,username:req.query.id}).then((user)=>{
+    if(user){
+      res.json({user})
+    }
+    else res.json({error:"An error has occured. please try again later"})
+  })
+})
+router.get("/api/getProfileByUsername",auth,(req,res)=>{
+  User.findOne({username:req.query.id}).then((user)=>{
     if(user){
       res.json({user})
     }
@@ -183,6 +304,14 @@ router.get("/api/getSavedListing",auth,(req,res)=>{
 })
 router.get("/api/getActiveListing",auth,(req,res)=>{
   Listing.find({creatorID:req.userID,completed:true}).then((attractions)=>{
+    if(attractions){
+      res.json({attractions})
+    }
+    else res.json({error:"An error has occured. please try again later"})
+  })
+})
+router.get("/api/getListing",auth,(req,res)=>{
+  Listing.find({completed:true}).then((attractions)=>{
     if(attractions){
       res.json({attractions})
     }
@@ -260,12 +389,47 @@ router.post("/api/saveListing",auth,(req,res)=>{
     }
   })
 })
+router.post("/api/saveRegion",auth,(req,res)=>{
+  title =  req.body.title
+  Region.findOne({title}).then((exist)=>{
+    if(exist){
+      res.json({error:"This region already exist"})
+    }
+    else {
+      Region.create({title}).then((region)=> res.json({success:"save",region}))
+    }
+  })
+})
+router.post("/api/saveCountry",auth,(req,res)=>{
+  title =  req.body.title
+  regionID =  req.body.regionID
+  Country.findOne({title}).then((exist)=>{
+    if(exist){
+      res.json({error:"This country already exist"})
+    }
+    else {
+      Country.create({title,regionID}).then((country)=> res.json({success:"save",country}))
+    }
+  })
+})
+router.post("/api/saveCity",auth,(req,res)=>{
+  title =  req.body.title
+  countryID =  req.body.countryID
+  City.findOne({title}).then((exist)=>{
+    if(exist){
+      res.json({error:"This city already exist"})
+    }
+    else {
+      City.create({title,countryID}).then((city)=> res.json({success:"save",city}))
+    }
+  })
+})
 router.post("/api/uploadListing",auth,(req,res)=>{
   var data = {}
   data = utils.filterData(req)
   if(utils.completed(data)){
     data.completed = true
-    Listing.findOneAndUpdate({"creatorID":req.userID,_id:req.body._id},data).then((succ)=>{
+    Listing.findOneAndUpdate({"creatorID":req.userID,_id:req.body._id},{...data,date:new Date()}).then((succ)=>{
       if(succ){
         res.json({success:"saved"})
       }

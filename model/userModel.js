@@ -16,6 +16,7 @@ var userSchema = mongoose.Schema({
     location: {
         type: String,
     },
+   
     phone:{
         type:String
     },
