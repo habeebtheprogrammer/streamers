@@ -1,7 +1,10 @@
 var mongoose = require('../config/mongoose');
 //user schema
 var userSchema = mongoose.Schema({
-    fullName: {
+    firstName: {
+        type: String,
+    },
+    lastName: {
         type: String,
     },
     username: {
@@ -10,13 +13,9 @@ var userSchema = mongoose.Schema({
     password: {
         type: String,
     },
-    role:{
-        type: String
-    },
     location: {
         type: String,
     },
-   
     phone:{
         type:String
     },
@@ -42,10 +41,6 @@ var userSchema = mongoose.Schema({
     },
     country: {
         type: String
-    },
-    creatorID:{
-        type: mongoose.SchemaTypes.ObjectId,
-        ref:"users"
     }
    
 })
