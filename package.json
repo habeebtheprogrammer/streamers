@@ -1,6 +1,6 @@
 {
-  "name": "Iflickr",
-  "description": "Iflickr networking web app",
+  "name": "ReactAngle",
+  "description": "ReactAngle networking web app",
   "version": "1.0.0",
   "engines": {
     "node": "8.9.4"
