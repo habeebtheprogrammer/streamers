@@ -18,6 +18,13 @@
 body{
 	font-family: open-sans !important
 }
+.comment{
+    padding:10px !important;
+    border-top:1px solid #f1f1f1 !important
+}
+.lato{
+    font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif !important
+}
 a{
 	font-weight: bolder;
 	color: #111 !important;
@@ -67,12 +74,13 @@ a{
     display: none !important
 }
 .ui.grid{
-    margin-right: 0px !important;
+    /* margin: 0px !important; */
 }
 .ui.basic.segment{
     padding: 0px;
 }
-.request section,.contact section{
+
+.request .first-section,.contact section{
     padding: 30px 0px
 }
 .request .stepone{
@@ -206,11 +214,10 @@ a{
 }
 .home .first-section{
     background:#000 url('../images/Dollarphotoclub_77067707.jpg');
-    background-position:center;
-    color:#fff;
+    background-position:right;
+    color:#eee;
     background-attachment:fixed;
-    text-align: center;
-    padding: 50px 10px;
+    padding: 100px 10px;
 }
 .home .second-section{
     padding:100px 0px;background:url('../images/apps.png');
@@ -230,18 +237,30 @@ a{
     color:#fff;
     padding: 100px 0px;
 }
+.xnav .ui.horizontal.list>.item a{
+    margin-left: 20px !important;
+    font-weight: bolder;
+    
+}
+.xnav{
+    border-bottom: 1px solid rgba(34,36,38,.1)
+}
 .bottom-section .b-box{
     padding:80px 10px;
     text-align:center;
     font-size:1.2em;
     font-weight:bolder;
 }
+.bottom-section{
+    border-top: 1px solid #d7d7d8;
+    border-bottom: 1px solid #d7d7d8
 
+}
 footer{
     padding: 20px 40px;
     background:#fff;
     color:#000;
-    border-top:1px solid #eee
+    /* border-top:1px solid #eee */
 }
 @media (max-width:400px){
     .home .second-section h1, .home .third-section h1,.about .first-section h1,.contact .first-section h1{
@@ -258,12 +277,14 @@ footer{
     }
     .about .first-section .content{
         padding: 50px 0px;
-        background:#fff url('../images/Dollarphotoclub_77067707.jpg');
-        color: #555;
+        background:#fff url('../images/Dollarphotoclub_78131491.jpg');
+        background-position: left;
+        color: #eee;
         text-align: left
     }
     .signin .right-grid{
         position: relative;
+        padding: 70px 0px
     }
     .nav-brand{
         padding-top:13px
@@ -274,5 +295,9 @@ footer{
     .request .stepone .ui.left.icon.right.input{
         border-right: 1px solid #e6e6e7;
         width: 100%;
+    }
+    .no-xspad{
+        padding-left: 0px !important;
+        padding-right: 0px !important;
     }
 }
