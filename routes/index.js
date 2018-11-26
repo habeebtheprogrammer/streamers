@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router()
 var bcrypt = require('bcrypt');
 var User = require('../model/userModel');
+var Reviews = require('../model/reviewModel');
 var generator = require("generate-password")
 var jwt = require('jsonwebtoken');
 var formidable = require('formidable');
@@ -18,42 +19,48 @@ function auth(req,res,next){
   var token =req.header("authorization");
   if(token){
     var data = jwt.decode(token,"1864");
+    console.log(data)
     req.userID = data.id;
     req.username = data.username
     next();
-  }else res.status(404)
+  }else res.json({error:"Please login to continue"})
 
   
 }
 //user Sign in route
 router.post('/api/login', function (req, res, next) {
-  var { username, password } = req.body;
-  var error = {}
-  if (username == "") error.username = "This field is required";
-  if (password == "") error.password = "This field is required";
-  if (error.password || error.username) {
-    return res.json({ "error": error })
-  }
-  var data = {
-    username: username
-  }
-  User.findOne({
-    username: username
-  }).then((user) => {
-    if (user) {
-      data.id = user._id
-        data.username = username
-        bcrypt.compare(password, user.password).then((valid) => {
-          if (valid) {
-            var token = jwt.sign(data, "1864").toString();
-            res.header('x-auth', token).json({ "token": token });
-          } else res.json({ "error":  "Please enter a valid username/password", "password": "incorrect password"  })
-        }).catch((error) => (console.log(error)));
-    } 
-    else {
-      res.json({ "error": "Please enter a valid username/password" })
+  if(req.body.profile){
+  console.log(req.body.profile)
+  }else{
+    var { username, password } = req.body;
+    var error = {}
+    if (username == "") error.username = "This field is required";
+    if (password == "") error.password = "This field is required";
+    if (error.password || error.username) {
+      return res.json({ "error": error })
     }
-  }).catch((err)=>console.log(err))
+    var data = {
+      username: username
+    }
+    User.findOne({
+      username: username
+    }).then((user) => {
+      if (user) {
+        data.id = user._id
+          data.username = username
+          bcrypt.compare(password, user.password).then((valid) => {
+            if (valid) {
+              var token = jwt.sign(data, "1864").toString();
+              res.header('x-auth', token).json({ "token": token });
+            } else res.json({ "error":  "Please enter a valid username/password", "password": "incorrect password"  })
+          }).catch((error) => (console.log(error)));
+      } 
+      else {
+        res.json({ "error": "Please enter a valid username/password" })
+      }
+    }).catch((err)=>console.log(err))
+  }
+  
 })
 
 .post("/api/signup", (req, res, next) => {
@@ -140,9 +147,10 @@ router.post('/api/login', function (req, res, next) {
     })
   })
 router.post("/api/updateProfile",auth,(req,res)=>{
-  User.findOneAndUpdate(req.userID,req.body).then((succ)=>{
-    if(succ){
-      res.json({success:"Update was successful"})
+
+  User.findOneAndUpdate(req.userID,req.body).then((success)=>{
+    if(success){
+      res.json({success:"Your profile has been updated successful"})
     }
     else res.json({error:"An error has occured. please try again later"})
   })
@@ -155,6 +163,16 @@ router.get("/api/getProfile",auth,(req,res)=>{
     }
     else res.json({error:"An error has occured. please try again later"})
   })
+})
+router.get("/api/getReviews",(req,res)=>{
+  Reviews.find().sort({"_id":-1}).populate("userID",{"firstName":"firstName","lastName":"lastName","username":"username","country":"country"}).exec().then((reviews)=>{
+    if(reviews)res.json({reviews})
+  })
+})
+router.post("/api/submitReview",auth,(req,res)=>{
+  var {rating,review} = req.body; console.log(req.userID)
+  Reviews.create({rating,review,userID:req.userID})
+  .then((succ)=>res.json({succ:"Your review has been submited successfully, Thank you"})).catch((error)=>console.log(error))
 })
 
 router.post('/api/reset', (req, res) => {

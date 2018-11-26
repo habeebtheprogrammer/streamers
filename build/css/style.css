@@ -29,8 +29,11 @@ a{
 	font-weight: bolder;
 	color: #111 !important;
 }
-.ui.move.reveal>.content{
-    float:none !important;
+.ui.floating.dropdown .menu{
+    left:-125px !important;
+}
+.xcursor{
+    cursor: pointer;
 }
 .no-padding{
     padding: 0px;
@@ -176,7 +179,7 @@ a{
     padding: 150px 10px 10px
 
 }
-.signin input{
+.signin input,.profile-card .edit-profile input{
     border-top: unset !important;
     border-left: unset !important;
     border-right: unset !important;
@@ -217,7 +220,10 @@ a{
     background-position:right;
     color:#eee;
     background-attachment:fixed;
-    padding: 100px 10px;
+    padding: 150px 10px 250px;
+}
+.home .first-section h1{
+    font-size: 2.5em !important
 }
 .home .second-section{
     padding:100px 0px;background:url('../images/apps.png');
@@ -237,8 +243,11 @@ a{
     color:#fff;
     padding: 100px 0px;
 }
+.home .first-section h1, .request .first-section h1{
+    font-size: 2.5em
+}
 .xnav .ui.horizontal.list>.item a{
-    margin-left: 20px !important;
+    /* margin-left: 20px !important; */
     font-weight: bolder;
     
 }
@@ -263,8 +272,15 @@ footer{
     /* border-top:1px solid #eee */
 }
 @media (max-width:400px){
-    .home .second-section h1, .home .third-section h1,.about .first-section h1,.contact .first-section h1{
+    .home .second-section h1, .home .third-section h1,.about .contact .first-section h1{
         font-size: 2em !important
+    }
+    .home .first-section h1{
+        font-size: 2em
+    }
+    .home .first-section{
+    padding: 100px 10px;
+
     }
     .home .second-section, .home .third-section{
         padding: 40px 0px
