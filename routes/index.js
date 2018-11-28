@@ -3,11 +3,13 @@ var router = express.Router()
 var bcrypt = require('bcrypt');
 var User = require('../model/userModel');
 var Reviews = require('../model/reviewModel');
+var Message = require('../model/messages');
 var generator = require("generate-password")
 var jwt = require('jsonwebtoken');
 var formidable = require('formidable');
 var cloudinary = require("cloudinary")
 var dotenv = require('dotenv')
+
 dotenv.config();
 
 cloudinary.config({
@@ -164,17 +166,38 @@ router.get("/api/getProfile",auth,(req,res)=>{
     else res.json({error:"An error has occured. please try again later"})
   })
 })
+
 router.get("/api/getReviews",(req,res)=>{
   Reviews.find().sort({"_id":-1}).populate("userID",{"firstName":"firstName","lastName":"lastName","username":"username","country":"country"}).exec().then((reviews)=>{
     if(reviews)res.json({reviews})
   })
 })
+router.get("/api/getMessages",(req,res)=>{
+  Message.find().sort({"_id":-1}).then((messages)=>{
+    if(messages)res.json({messages})
+  })
+})
+router.post("/api/updateChat",auth,(req,res)=>{
+  var {message,conversationID} = req.body;
+  Message.update({ _id: conversationID }, {updated:new Date(), $push: { conversation: { message, senderID:req.userID} } })
+  .then((success)=>{
+    res.json({data:{message,senderID:req.userID, date:new Date()},conversationID})
+  })
+})
 router.post("/api/submitReview",auth,(req,res)=>{
-  var {rating,review} = req.body; console.log(req.userID)
+  var {rating,review} = req.body;
   Reviews.create({rating,review,userID:req.userID})
   .then((succ)=>res.json({succ:"Your review has been submited successfully, Thank you"})).catch((error)=>console.log(error))
 })
-
+router.post("/api/submitRequest",auth,(req,res)=>{
+  var {message,price} = req.body;  
+  var ticket = generator.generate({
+    length: 10,
+    numbers: true
+  });
+  Message.create({price,ticket,senderID:req.userID,updated:new Date(),conversation:{senderID:req.userID,message}})
+  .then((success)=>res.json({success:"Your request has been submited successfully. Please check your inbox"})).catch((error)=>{console.log(error);res.json({error:"An error has occured. please try again later"})})
+})
 router.post('/api/reset', (req, res) => {
   const { email } = req.body;
   let token;

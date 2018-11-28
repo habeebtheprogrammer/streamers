@@ -29,33 +29,39 @@ a{
 	font-weight: bolder;
 	color: #111 !important;
 }
-.ui.floating.dropdown .menu{
+.ui.floating.dropdown .menu.code{
     left:-125px !important;
 }
 .xcursor{
     cursor: pointer;
 }
 .no-padding{
-    padding: 0px;
+    padding: 0px !important
+}
+.no-leftpad{
+    padding-left: 0px !important
+}
+.no-rightpad{
+    padding-right: 0px !important
+}
+.no-toppad{
+    padding-top: 0px !important
+}
+.pad-bottom{
+    padding-bottom: 20px
 }
 .fs1-2{
     font-size: 1.2em;
+}
+.message-box{
+    position: absolute;
+    bottom: 0;
+    width: 94%;
 }
 .nav-brand{
     font-family:open-sans2;
     font-size:1.5em;
     padding-top:8px
-}
-.btn-bars{
-    font-family: open-sans2;
-    border: 1px solid rgb(221, 221, 221);
-    font-size: 1.44em;
-    padding-top: 6px;
-    text-align: right;
-    display: inline-block;
-    padding: 10px;
-    border-radius: 4px;
-    color: grey;
 }
 .side-widget{
     padding: 30px 0px;
@@ -87,7 +93,7 @@ a{
     padding: 30px 0px
 }
 .request .stepone{
-    padding: 30px 0px;
+    padding: 0px 0px 50px;
 }
 .contact .large-comment{
     background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(121, 14, 98) 100%);
@@ -246,13 +252,93 @@ a{
 .home .first-section h1, .request .first-section h1{
     font-size: 2.5em
 }
+.home .xlgicon i{
+    font-size: 5em !important
+}
+.chat .event{
+    padding: 10px 10px !important;
+    border-top: 1px solid #ddd !important
+}
+.chat .messages .event{
+    border-top: unset !important
+}
+.chat .event:hover{
+    background: #f8f8f8 !important
+}
+.chat .event.active{
+    background: rgba(243, 118, 55,0.4) !important
+}
+.chat .xheight{
+    max-height: 450px;
+    overflow: auto;
+}
 .xnav .ui.horizontal.list>.item a{
     /* margin-left: 20px !important; */
     font-weight: bolder;
-    
 }
 .xnav{
     border-bottom: 1px solid rgba(34,36,38,.1)
+}
+
+.m-menu{
+    margin-right:-280px;
+    width: 70%;
+    overflow: hidden;
+    position: fixed;
+    z-index: 1026;
+    height: 100%;
+    background: #111;
+    right: 0;
+    top:0;
+    bottom:0;
+    transition: 0.3s ease-in;
+    background: #f8f8f8;
+    transition: 0.3s ease-in;
+    /* display: none; */
+}
+.m-menu .x-profile{
+    background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(121, 14, 98) 100%);
+    /* background:#ec3b5c; */
+    min-height: 100px !important;
+    padding: 30px 10px !important;
+    color: #fff;
+}
+.m-menu .x-profile img{
+    width: 100%;
+    border-radius: 100%;
+}
+.m-menu .x-profile a{
+    font-size: 1.2em;
+    color: #eee
+}
+
+.m-menu .links a{
+    background: #fff;
+    padding: 13px 15px;
+    display: block;
+    font-size: 0.9em;
+    font-weight: bolder
+}
+.white-links a {
+    color:#fff !important
+}
+.m-menu .links a i{
+    margin-right: 10px
+}
+.xdimmer{
+    position: fixed;
+    width: 30%;
+    left: 0;
+    height: 100%;
+    background: rgba(29, 29, 29, 0.8);
+    z-index: 1020;
+    
+}
+
+.togglenav{
+    margin-right:0px;
+    display: block;
+    transition: 0.2s ease-in;
 }
 .bottom-section .b-box{
     padding:80px 10px;
@@ -272,11 +358,11 @@ footer{
     /* border-top:1px solid #eee */
 }
 @media (max-width:400px){
-    .home .second-section h1, .home .third-section h1,.about .contact .first-section h1{
+    .home .second-section h1, .home .third-section h1,.about  .first-section h1, .request .first-section h1,.contact .first-section h1{
         font-size: 2em !important
     }
     .home .first-section h1{
-        font-size: 2em
+        font-size: 2em !important
     }
     .home .first-section{
     padding: 100px 10px;
@@ -284,6 +370,9 @@ footer{
     }
     .home .second-section, .home .third-section{
         padding: 40px 0px
+    }
+    .home .xlgicon i{
+        font-size: 3em !important
     }
     .fs1-2{
         font-size: 1.1em;
@@ -303,7 +392,7 @@ footer{
         padding: 70px 0px
     }
     .nav-brand{
-        padding-top:13px
+        padding-top:10px
     }
     .request .ui.tag.label.label{
         display: none
@@ -312,8 +401,20 @@ footer{
         border-right: 1px solid #e6e6e7;
         width: 100%;
     }
+    .request .second-section{
+      padding-top: 30px !important;
+
+    }
     .no-xspad{
         padding-left: 0px !important;
         padding-right: 0px !important;
+    }
+    .message-box{
+        position: relative;
+        width: 100%;
+        margin-top: 20px
+    }
+    .side-widget{
+        display: none;
     }
 }
