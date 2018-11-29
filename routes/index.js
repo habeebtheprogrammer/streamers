@@ -21,9 +21,9 @@ function auth(req,res,next){
   var token =req.header("authorization");
   if(token){
     var data = jwt.decode(token,"1864");
-    console.log(data)
     req.userID = data.id;
     req.username = data.username
+    req.role = data.role==="support"?data.role:null
     next();
   }else res.json({error:"Please login to continue"})
 
@@ -32,7 +32,6 @@ function auth(req,res,next){
 //user Sign in route
 router.post('/api/login', function (req, res, next) {
   if(req.body.profile){
-  console.log(req.body.profile)
   }else{
     var { username, password } = req.body;
     var error = {}
@@ -49,7 +48,11 @@ router.post('/api/login', function (req, res, next) {
     }).then((user) => {
       if (user) {
         data.id = user._id
-          data.username = username
+          data.username = username;
+          data.firstname= user.firstName;
+          data.lastname= user.lastName;
+          data.country = user.country;
+          if(user.role=="support" && !user.country) data.role="support"
           bcrypt.compare(password, user.password).then((valid) => {
             if (valid) {
               var token = jwt.sign(data, "1864").toString();
@@ -150,7 +153,7 @@ router.post('/api/login', function (req, res, next) {
   })
 router.post("/api/updateProfile",auth,(req,res)=>{
 
-  User.findOneAndUpdate(req.userID,req.body).then((success)=>{
+  User.findOneAndUpdate({"_id":req.userID},req.body).then((success)=>{
     if(success){
       res.json({success:"Your profile has been updated successful"})
     }
@@ -172,11 +175,16 @@ router.get("/api/getReviews",(req,res)=>{
     if(reviews)res.json({reviews})
   })
 })
-router.get("/api/getMessages",(req,res)=>{
-  Message.find().sort({"_id":-1}).then((messages)=>{
+router.get("/api/getMessages",auth,(req,res)=>{
+  req.role==="support"?
+  Message.find().sort({"_id":-1}).populate("senderID",{"username":"username","firstName":"firstName","lastName":"lastName","email":"email","country":"country",regDate:"regDate",description:"description"}).exec().then((messages)=>{
     if(messages)res.json({messages})
-  })
+  }) :
+  Message.find({senderID:req.userID}).sort({"_id":-1}).then((messages)=>{
+    if(messages)res.json({messages})
+  }) 
 })
+
 router.post("/api/updateChat",auth,(req,res)=>{
   var {message,conversationID} = req.body;
   Message.update({ _id: conversationID }, {updated:new Date(), $push: { conversation: { message, senderID:req.userID} } })

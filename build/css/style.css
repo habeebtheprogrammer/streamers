@@ -56,7 +56,8 @@ a{
 .message-box{
     position: absolute;
     bottom: 0;
-    width: 94%;
+    width: 100%;
+    padding: 20px
 }
 .nav-brand{
     font-family:open-sans2;
@@ -268,6 +269,9 @@ a{
 .chat .event.active{
     background: rgba(243, 118, 55,0.4) !important
 }
+.chat .event .content .text.extra{
+    white-space: pre-wrap
+}
 .chat .xheight{
     max-height: 450px;
     overflow: auto;
@@ -297,7 +301,8 @@ a{
     /* display: none; */
 }
 .m-menu .x-profile{
-    background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(121, 14, 98) 100%);
+    background:url('../../../../images/copy.jpg');
+    /* background-position: right; */
     /* background:#ec3b5c; */
     min-height: 100px !important;
     padding: 30px 10px !important;
@@ -316,8 +321,8 @@ a{
     background: #fff;
     padding: 13px 15px;
     display: block;
-    font-size: 0.9em;
-    font-weight: bolder
+    font-size: 1em;
+    /* font-weight: bolder */
 }
 .white-links a {
     color:#fff !important
@@ -416,5 +421,8 @@ footer{
     }
     .side-widget{
         display: none;
+    }
+    .signin input,.profile-card .edit-profile input{
+        padding-left: 5px !important
     }
 }
