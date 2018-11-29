@@ -320,8 +320,9 @@ a{
 .m-menu .links a{
     background: #fff;
     padding: 13px 15px;
+    font-family: open-sans;
     display: block;
-    font-size: 1em;
+    font-size: 0.95em;
     /* font-weight: bolder */
 }
 .white-links a {
@@ -388,7 +389,8 @@ footer{
     .about .first-section .content{
         padding: 50px 0px;
         background:#fff url('../images/Dollarphotoclub_78131491.jpg');
-        background-position: left;
+        background-position: center;
+        background-size: cover;
         color: #eee;
         text-align: left
     }
