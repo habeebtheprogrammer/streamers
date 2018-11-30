@@ -192,6 +192,14 @@ router.post("/api/updateChat",auth,(req,res)=>{
     res.json({data:{message,senderID:req.userID, date:new Date()},conversationID})
   })
 })
+router.post("/api/createOffer",auth,(req,res)=>{
+  var {offerTitle,offerDesc,offerBudget,offerDeadline,conversationID} = req.body;
+  Message.update({ _id: conversationID }, {updated:new Date(), $push: { conversation: {offerTitle,offerDesc,offerBudget,offerDeadline,senderID:req.userID,message:"Here is an offer"} } })
+  .then((success)=>{
+    console.log(conversationID)
+    res.json({data:{offerTitle,offerDesc,offerBudget,offerDeadline,senderID:req.userID, date:new Date()},conversationID})
+  }).catch((err)=>console.log(err))
+})
 router.post("/api/submitReview",auth,(req,res)=>{
   var {rating,review} = req.body;
   Reviews.create({rating,review,userID:req.userID})
@@ -203,7 +211,7 @@ router.post("/api/submitRequest",auth,(req,res)=>{
     length: 10,
     numbers: true
   });
-  Message.create({price,ticket,senderID:req.userID,updated:new Date(),conversation:{senderID:req.userID,message}})
+  Message.create({ticket,senderID:req.userID,updated:new Date(),conversation:{senderID:req.userID,message,requestBudget:price}})
   .then((success)=>res.json({success:"Your request has been submited successfully. Please check your inbox"})).catch((error)=>{console.log(error);res.json({error:"An error has occured. please try again later"})})
 })
 router.post('/api/reset', (req, res) => {

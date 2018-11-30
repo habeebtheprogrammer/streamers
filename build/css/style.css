@@ -1,6 +1,6 @@
 
 .white {background:#fff}
-.light {background:#f7f7f7}
+.light {background:#f7f7f7 !important}
 .gray {background:#6c757d}
 .dark-grey{background: #343a40}
 .dark {background:#343a40}
@@ -271,6 +271,9 @@ a{
 }
 .chat .event .content .text.extra{
     white-space: pre-wrap
+}
+.chat .event .content .header{
+    text-transform: capitalize
 }
 .chat .xheight{
     max-height: 450px;

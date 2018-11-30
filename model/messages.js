@@ -12,10 +12,6 @@ var schema = mongoose.Schema({
     ticket:{
         type:String
     },
-    title:String,
-    price: Number,
-    accepted: Boolean,
-    declined: Boolean,
     conversation: [
         {
         senderID:{type:mongoose.SchemaTypes.ObjectId,ref:"users"},
@@ -24,7 +20,13 @@ var schema = mongoose.Schema({
             default: Date.now
         },
         message:{type: String},
-        }
+        requestBudget: {type:Number},
+        offerDesc:{type: String},
+        offerTitle:{type:String},
+        offerBudget:{type:Number},
+        offerDeadline:{type:Date},
+        },
+
     ]
 })
 var Message = mongoose.model('messages', schema);
