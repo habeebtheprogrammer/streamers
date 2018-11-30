@@ -184,6 +184,27 @@ router.get("/api/getMessages",auth,(req,res)=>{
     if(messages)res.json({messages})
   }) 
 })
+router.get("/api/getRequestById",auth,(req,res)=>{
+  var {r,c} = req.query;
+  
+  Message.findById({_id:c}).then((conv)=>{
+    if(conv){
+     var order,offer={}; var ticket = conv.ticket;
+     conv.conversation.map((msg)=>{
+       if(msg.requestBudget)  order = msg.message;
+       if(msg._id==r){
+        offer.offerDesc = msg.offerDesc
+        offer.offerTitle = msg.offerTitle
+        offer.offerBudget = msg.offerBudget
+        offer.offerDeadline = msg.offerDeadline
+      }
+     });
+     offer.order = order;
+     offer.ticket = ticket;
+     if(offer.order) res.json({offer})
+    }
+  }) 
+})
 
 router.post("/api/updateChat",auth,(req,res)=>{
   var {message,conversationID} = req.body;
