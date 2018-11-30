@@ -64,6 +64,27 @@ a{
     font-size:1.5em;
     padding-top:8px
 }
+.navmodal,.commingsoon{
+    position:fixed;
+    height: 100%;
+    width: 100%;
+    top:0;
+    bottom: 0;
+    background: #333;
+    z-index: 2000;
+    color:#f7f7f7;
+    padding: 50px 0px; 
+}
+.navmodal a{
+    color:#f7f7f7 !important;
+    margin-top: 12px;
+    font-size: 1.5em;
+    float: left;
+    padding-left: 5px;
+}
+.commingsoon h1{
+    font-size: 4em;
+}
 .side-widget{
     padding: 30px 0px;
     position: fixed;
@@ -90,11 +111,15 @@ a{
     padding: 0px;
 }
 
-.request .first-section,.contact section{
-    padding: 30px 0px
+.request .first-section{
+    padding: 120px 0px 50px
 }
 .request .stepone{
     padding: 0px 0px 50px;
+}
+.contact section
+{
+    padding: 30px 0px
 }
 .contact .large-comment{
     background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(121, 14, 98) 100%);
@@ -125,7 +150,7 @@ a{
     background-attachment:fixed
 }
 .contact .content{
-    padding:60px 0px;
+    padding:150px 0px 60px;
     color:#fff
 }
  .form-box{
@@ -227,7 +252,7 @@ a{
     background-position:right;
     color:#eee;
     background-attachment:fixed;
-    padding: 150px 10px 250px;
+    padding: 200px 10px 250px;
 }
 .home .first-section h1{
     font-size: 2.5em !important
@@ -250,7 +275,7 @@ a{
     color:#fff;
     padding: 100px 0px;
 }
-.home .first-section h1, .request .first-section h1{
+.home .first-section h1, .request .first-section h1, .contact .first-section h1{
     font-size: 2.5em
 }
 .home .xlgicon i{
@@ -284,7 +309,10 @@ a{
     font-weight: bolder;
 }
 .xnav{
-    border-bottom: 1px solid rgba(34,36,38,.1)
+    border-bottom: 1px solid #ddd;
+    position: fixed;
+    width: -webkit-fill-available;
+    z-index: 1089;
 }
 
 .m-menu{
@@ -361,10 +389,23 @@ a{
 
 }
 footer{
-    padding: 20px 40px;
+    /* padding: 20px 40px; */
     background:#fff;
     color:#000;
     /* border-top:1px solid #eee */
+}
+footer .first-row h3{
+    color: #666 !important;
+}
+footer .main-footer{
+    padding: 50px 50px !important;
+    border-top: 1px solid #ddd
+}
+footer .copyright{
+    padding: 20px 0px
+}
+footer a{
+    font-weight: bolder;
 }
 @media (max-width:400px){
     .home .second-section h1, .home .third-section h1,.about  .first-section h1, .request .first-section h1,.contact .first-section h1{
@@ -374,11 +415,19 @@ footer{
         font-size: 2em !important
     }
     .home .first-section{
-    padding: 100px 10px;
-
+    padding: 160px 0px;
+    }
+    .request .first-section, .contact .first-section .content{
+        padding: 100px 0px 50px !important
+    }
+   .contact .first-section .content{
+        padding: 130px 0px !important
+    }
+    .about .first-section .content{
+        padding: 140px 0px 50px !important
     }
     .home .second-section, .home .third-section{
-        padding: 40px 0px
+        padding: 50px 0px
     }
     .home .xlgicon i{
         font-size: 3em !important
@@ -386,11 +435,9 @@ footer{
     .fs1-2{
         font-size: 1.1em;
     }
-    footer{
-        padding: 20px 10px;
-    }
+  
+  
     .about .first-section .content{
-        padding: 50px 0px;
         background:#fff url('../images/Dollarphotoclub_78131491.jpg');
         background-position: center;
         background-size: cover;
@@ -429,5 +476,23 @@ footer{
     }
     .signin input,.profile-card .edit-profile input{
         padding-left: 5px !important
+    }
+    .navmodal{
+        text-align: center;
+        width: 92%;
+    }
+    .navmodal button{
+        float: unset !important
+    }
+    .navmodal a{
+        float: unset !important;
+        font-size: 0.9em;
+        display: block;
+    }
+    footer .main-footer{
+       display: none !important
+    }
+    footer div{
+        border-top: unset !important
     }
 }
