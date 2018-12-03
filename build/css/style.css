@@ -167,7 +167,7 @@ a{
     padding:180px 0px 150px;
     overflow: hidden;
 }
-.affiliates button {
+.affiliates .second button {
     margin-top: 20px !important
 }
 .about .features{
@@ -492,6 +492,7 @@ footer a{
     }
     .navmodal{
         width: 92%;
+        padding: 25px 0px
     }
     .modal-links{
         text-align: center !important;
