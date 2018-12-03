@@ -70,7 +70,7 @@ a{
     width: 100%;
     top:0;
     bottom: 0;
-    background: #333;
+    background: rgba(0, 0, 0, 0.9);
     z-index: 2000;
     color:#f7f7f7;
     padding: 50px 0px; 
@@ -157,6 +157,18 @@ a{
     padding: 30px;
     background: #fff;
     border: 1px solid #eee
+}
+.affiliates .first-section{
+    background:url('../images/bg.jpg');
+    background-position:center;
+    color:#fff;
+    background-attachment:fixed;
+    background-position: bottom;
+    padding:180px 0px 150px;
+    overflow: hidden;
+}
+.affiliates button {
+    margin-top: 20px !important
 }
 .about .features{
     background: rgb(45,47,50) url('../../images/code.jpg') no-repeat;
@@ -385,8 +397,8 @@ a{
 }
 .bottom-section{
     border-top: 1px solid #d7d7d8;
-    border-bottom: 1px solid #d7d7d8
-
+    border-bottom: 1px solid #d7d7d8;
+    background: #fff;
 }
 footer{
     /* padding: 20px 40px; */
@@ -399,7 +411,7 @@ footer .first-row h3{
 }
 footer .main-footer{
     padding: 50px 50px !important;
-    border-top: 1px solid #ddd
+    border-top: 1px solid #ddd;
 }
 footer .copyright{
     padding: 20px 0px
@@ -407,6 +419,7 @@ footer .copyright{
 footer a{
     font-weight: bolder;
 }
+
 @media (max-width:400px){
     .home .second-section h1, .home .third-section h1,.about  .first-section h1, .request .first-section h1,.contact .first-section h1{
         font-size: 2em !important
@@ -487,7 +500,8 @@ footer a{
         float: unset;
     }
     .navmodal button{
-        float: unset !important
+        float: unset !important;
+        font-size: 1em !important
     }
     .navmodal a{
         float: unset !important;
