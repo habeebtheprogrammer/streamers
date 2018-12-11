@@ -4,6 +4,7 @@ var bcrypt = require('bcrypt');
 var User = require('../model/userModel');
 var Reviews = require('../model/reviewModel');
 var Message = require('../model/messages');
+var Newsletter = require('../model/newsletter');
 var generator = require("generate-password")
 var jwt = require('jsonwebtoken');
 var formidable = require('formidable');
@@ -235,6 +236,14 @@ router.post("/api/submitRequest",auth,(req,res)=>{
   Message.create({ticket,senderID:req.userID,updated:new Date(),conversation:{senderID:req.userID,message,requestBudget:price}})
   .then((success)=>res.json({success:"Your request has been submited successfully. Please check your inbox"})).catch((error)=>{console.log(error);res.json({error:"An error has occured. please try again later"})})
 })
+router.post("/api/submitNewsletter",(req,res)=>{
+  Newsletter.findOne({email: req.body.email}).then((exist)=>{
+    if(exist === null){
+        Newsletter.create({email:req.body.email}).then((success)=>res.json({success:'You have successfully opted in for our monthly newsletter. Thank you'}))
+}else res.json({error:"You currently have an active subscription"})
+  }).catch((err)=>console.log(err))
+})
+
 router.post('/api/reset', (req, res) => {
   const { email } = req.body;
   let token;

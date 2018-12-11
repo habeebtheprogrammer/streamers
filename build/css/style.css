@@ -64,39 +64,37 @@ a{
     font-size:1.5em;
     padding-top:8px
 }
-.navmodal,.commingsoon{
-    position:fixed;
-    height: 100%;
-    width: 100%;
-    top:0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.9);
-    z-index: 2000;
-    color:#f7f7f7;
-    padding: 50px 0px; 
-}
-.navmodal a{
-    color:#f7f7f7 !important;
-    margin-top: 12px;
-    font-size: 1.5em;
-    float: left;
-    padding-left: 5px;
-}
+
 .commingsoon h1{
     font-size: 4em;
 }
-.side-widget{
-    padding: 30px 0px;
+.bottom-chatbox{
     position: fixed;
+    right: 20px;
+    bottom:20px;
+    text-align: center
+}
+.scroll-top{
+    position: fixed;
+    right: 20px;
+    bottom:120px;
+    text-align: center
+}
+.side-widget{
+    /* padding: 30px 0px; */
+    position: fixed;
+    width: 10px;
     left: 0;
-    top:170px;
-    width: 50px;
-    background: rgba(170, 168, 168, 0.4);
+    top:220px;
+    /* background: rgba(170, 168, 168, 0.4); */
     text-align: center
 }
 
 .side-widget .row{
-    padding: 6px 0px !important
+    padding: 0px !important
+}
+.side-widget button{
+    border-radius: unset !important
 }
 .open-sans2{
     font-family: open-sans2
@@ -104,8 +102,14 @@ a{
 .hide{
     display: none !important
 }
+.hide-xs{
+    display: block
+}
 .ui.grid{
     /* margin: 0px !important; */
+}
+.ui.dimmer{
+    position: fixed !important
 }
 .ui.basic.segment{
     padding: 0px;
@@ -144,8 +148,8 @@ a{
     font-size: 1.1em;
 }
 .contact .first-section{
-    background:#fff url('../images/15951085751_8286c0db93_o.jpg');
-    background-position:center;
+    background:#fff url('../images/china.jpg');
+    background-position:bottom;
     color:#fff;
     background-attachment:fixed
 }
@@ -158,7 +162,7 @@ a{
     background: #fff;
     border: 1px solid #eee
 }
-.affiliates .first-section{
+.affiliates .first-section,.misc .first-section{
     background:url('../images/bg.jpg');
     background-position:center;
     color:#fff;
@@ -208,11 +212,11 @@ a{
 .signin .left-grid{
     position: absolute;
     width: -webkit-fill-available;
-    background: url('../../images/Dollarphotoclub_621385541.jpg');
+    background: url('../../images/china.jpg');
     height:-webkit-fill-available;
     text-align: center;
     background-position: top;
-    color: #555;
+    color: #000;
     padding: 150px 10px 10px
 }
 .signin .right-grid{
@@ -260,8 +264,9 @@ a{
     font-weight: bolder
 }
 .home .first-section{
-    background:#000 url('../images/Dollarphotoclub_77067707.jpg');
+    background:#000 url('../images/home-parrot-main-react.png');
     background-position:right;
+    background-size:cover;
     color:#eee;
     background-attachment:fixed;
     padding: 200px 10px 250px;
@@ -271,7 +276,7 @@ a{
 }
 .home .second-section{
     padding:100px 0px;background:url('../images/apps.png');
-    background-size:50%;
+    background-size:60%;
     background-position:right;
     background-repeat:no-repeat;
     background-position-x: right;
@@ -321,12 +326,51 @@ a{
     font-weight: bolder;
 }
 .xnav{
-    border-bottom: 1px solid #ddd;
-    position: fixed;
+    /* border-bottom: 1px solid #ddd; */
+    position: absolute;
     width: -webkit-fill-available;
     z-index: 1089;
+transition: 0.2s ease-in;
+color: #fff
+
 }
 
+.xnav.fixed{
+position: fixed;
+transition: 0.2s ease-in;
+background: #fff;
+border-bottom: 1px solid #ddd;
+color: #000;
+}
+.xnav.fixed a{
+    color: #000 !important
+}
+.xnav.xnav.fixed .navmodal a{
+    color: #f7f7f7 !important
+}
+.xnav a{
+    color: #fff !important
+}
+
+.navmodal,.commingsoon{
+    position:fixed;
+    height: 100%;
+    width: 100%;
+    top:0;
+    bottom: 0;
+    background:rgba(0, 0, 0, 0.9);
+    background-position: right;
+    z-index: 2000;
+    color:#f7f7f7;
+    padding: 50px 0px; 
+}
+.navmodal a{
+    color:#f7f7f7 !important;
+    margin-top: 12px;
+    font-size: 1.5em;
+    float: left;
+    padding-left: 5px;
+}
 .m-menu{
     margin-right:-280px;
     width: 70%;
@@ -402,8 +446,12 @@ a{
 }
 footer{
     /* padding: 20px 40px; */
-    background:#fff;
-    color:#000;
+    background : url('../../../images/world2.png'),#333;
+    background-position-y: bottom;
+    background-position-x: right;
+    background-size: 40%;
+    background-repeat: no-repeat;
+    color:#999;
     /* border-top:1px solid #eee */
 }
 footer .first-row h3{
@@ -411,13 +459,31 @@ footer .first-row h3{
 }
 footer .main-footer{
     padding: 50px 50px !important;
-    border-top: 1px solid #ddd;
+    border-top: 1px solid #555;
 }
+footer .top-footer{
+    padding-left: 50px !important;
+    padding-right: 50px !important;
+    border-top: 1px solid #555;
+}
+
 footer .copyright{
     padding: 20px 0px
 }
 footer a{
     font-weight: bolder;
+    color: #999 !important;
+    /* font-size: 0.9em; */
+}
+footer a:hover{
+    color: #eee !important;
+    transition: 0.3s ease-in;
+    /* font-size: 0.9em; */
+}
+footer button.ask{
+    color:#999 !important;
+    background: transparent !important;
+    border: 1px solid #999 !important
 }
 
 @media (max-width:400px){
@@ -451,8 +517,8 @@ footer a{
   
   
     .about .first-section .content{
-        background:#fff url('../images/Dollarphotoclub_78131491.jpg');
-        background-position: center;
+        background:#fff url('../images/Dollarphotoclub_77067707.jpg');
+        background-position: right;
         background-size: cover;
         color: #eee;
         text-align: left
@@ -515,4 +581,22 @@ footer a{
     footer div{
         border-top: unset !important
     }
+    footer .top-footer{
+        padding-left: 10px!important;
+        padding-right: 10px!important;
+    }
+    .hide-xs{
+        display: none
+    }
+    .xnav{
+        background: #fff;
+        
+        }
+    .xnav a,.xnav.fixed a{
+            color: #000 !important
+        }
+      
+        .xnav.fixed .navmodal a,.xnav .navmodal a{
+            color: #f7f7f7 !important
+        }
 }
