@@ -242,7 +242,7 @@ router.post("/api/submitNewsletter",(req,res)=>{
         Newsletter.create({email:req.body.email}).then((success)=>res.json({success:'You have successfully opted in for our monthly newsletter. Thank you'}))
 }else res.json({error:"You currently have an active subscription"})
   }).catch((err)=>console.log(err))
-})
+}) 
 
 router.post('/api/reset', (req, res) => {
   const { email } = req.body;
