@@ -24,7 +24,7 @@ var schema = mongoose.Schema({
         offerDesc:{type: String},
         offerTitle:{type:String},
         offerBudget:{type:Number},
-        offerDeadline:{type:Date},
+        offerDuration:{type:Number},
         },
 
     ]

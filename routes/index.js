@@ -197,7 +197,7 @@ router.get("/api/getRequestById",auth,(req,res)=>{
         offer.offerDesc = msg.offerDesc
         offer.offerTitle = msg.offerTitle
         offer.offerBudget = msg.offerBudget
-        offer.offerDeadline = msg.offerDeadline
+        offer.offerDuration = msg.offerDuration
       }
      });
      offer.order = order;
@@ -215,11 +215,10 @@ router.post("/api/updateChat",auth,(req,res)=>{
   })
 })
 router.post("/api/createOffer",auth,(req,res)=>{
-  var {offerTitle,offerDesc,offerBudget,offerDeadline,conversationID} = req.body;
-  Message.update({ _id: conversationID }, {updated:new Date(), $push: { conversation: {offerTitle,offerDesc,offerBudget,offerDeadline,senderID:req.userID,message:"Here is an offer"} } })
+  var {offerTitle,offerDesc,offerBudget,offerDuration,conversationID} = req.body;
+  Message.update({ _id: conversationID }, {updated:new Date(), $push: { conversation: {offerTitle,offerDesc,offerBudget,offerDuration,senderID:req.userID,message:"Here is an offer"} } })
   .then((success)=>{
-    console.log(conversationID)
-    res.json({data:{offerTitle,offerDesc,offerBudget,offerDeadline,senderID:req.userID, date:new Date()},conversationID})
+    res.json({success:"Offer created successfully",data:{offerTitle,offerDesc,offerBudget,offerDuration,senderID:req.userID, date:new Date()},conversationID})
   }).catch((err)=>console.log(err))
 })
 router.post("/api/submitReview",auth,(req,res)=>{
