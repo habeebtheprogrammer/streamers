@@ -1,6 +1,6 @@
 
 .white {background:#fff}
-.light {background:#f7f7f7 !important}
+.light {background:#f8f9fa !important}
 .gray {background:#6c757d}
 .dark-grey{background: #343a40}
 .dark {background:#343a40}
@@ -131,16 +131,16 @@ a{
     padding: 30px 0px
 }
 .contact .large-comment{
-    background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(121, 14, 98) 100%);
+    background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(32, 30, 32) 100%);
     padding: 50px;
     color: #fff
 }
-.contact .large-comment::after{
+.contact .large-comment::before{
     position: absolute;
     content: "";
     border-style: solid;
     border-width: 20px;
-    bottom: -20px;
+    top: 201px;
     left: 50px;
     border-top-color: #ea6d33;
     border-right-color: transparent;
@@ -161,6 +161,19 @@ a{
 .contact .content{
     padding:150px 0px 60px;
     color:#fff
+}
+.contact input::placeholder{
+    color: #888 !important;
+    font-size: 0.8em !important
+}
+.contact label{
+    font-size: 1em !important;
+    font-weight: bolder;
+}
+.contact .ui.card{
+    color: #000 !important;
+    box-shadow: 0 1px 1px 0 #ddd !important;
+    font-size: 1.1em !important
 }
  .form-box{
     padding: 30px;
@@ -266,8 +279,72 @@ a{
     padding: 20px 0px;
     font-size: 0.8em;
     text-align: center;
-    font-weight: bolder
+    font-weight: bolder;
+
 }
+.ourclients{
+    padding:50px 0px;
+    background:#fff;
+    min-height: 700px
+}
+
+.ourclients .ui.card{
+    border: unset !important;
+    border-radius: unset !important;
+    box-shadow: 0 1px 6px 0 #ddd !important;
+    cursor: pointer;
+}
+.ourclients .ui.card:hover{
+   margin-top: -10px !important;
+   transition: 0.2s ease-in
+}
+.ourclients .ui.card>.content.first{
+    padding: 70px 30px !important
+}
+.ourclients .ui.card>.content.second{
+    padding: 30px  30px!important;
+    background:#ce670f;
+}
+.ourclients h1{
+    margin: 20px 0px 40px !important;
+    font-size: 2.5em
+}
+.ourclients h5{
+    border-bottom: 5px solid #c8632a;
+    display: inline-block;
+    padding-bottom: 10px;
+}
+.ourclients .content.second div{
+    color: #fff !important
+
+}
+.ourclients img{
+    margin-top: -85px !important
+}
+.ourservices{
+    min-height: 400px;
+}
+.ourservices .ui.card:hover{
+    margin-top: -10px !important;
+    transition: 0.2s ease-in
+}
+.ourservices .ui.card>.content{
+    padding: 60px 30px !important
+}
+.ourservices .first-row{
+    margin-top: -70px !important;
+    
+}
+.ourservices .ui.card{
+    border: unset !important;
+    border-radius: unset !important;
+    box-shadow: 0 1px 6px 0 #ddd !important;
+    cursor: pointer;
+}
+
+.ourservices .xcontainer,.ourclients .xcontainer{
+    padding: 20px 80px !important;
+ }
 .home .first-section{
     background:#000 url('../images/home-parrot-main-react.png');
     background-position:right;
@@ -292,7 +369,7 @@ a{
     font-size: 2.5em !important;
 }
 .home .third-section{
-    background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(121, 14, 98) 100%);
+    background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(32, 30, 32) 100%);
     background-position:center;
     color:#fff;
     padding: 100px 0px;
@@ -302,6 +379,9 @@ a{
 }
 .home .xlgicon i{
     font-size: 5em !important
+}
+.reviews .ui.card{
+    box-shadow: 0 1px 4px 0 #eee !important
 }
 .chat .event{
     padding: 10px 10px !important;
@@ -495,7 +575,7 @@ footer button.ask{
     .home .second-section h1, .home .third-section h1,.about  .first-section h1, .request .first-section h1,.contact .first-section h1{
         font-size: 2em !important
     }
-    .home .first-section h1{
+    .home .first-section h1,.ourclients h1{
         font-size: 2em !important
     }
     .home .first-section{
@@ -546,7 +626,7 @@ footer button.ask{
       padding-top: 30px !important;
 
     }
-    .no-xspad{
+    .no-xspad,.ui.container.no-xspad{
         padding-left: 0px !important;
         padding-right: 0px !important;
     }
@@ -601,7 +681,17 @@ footer button.ask{
             color: #000 !important
         }
       
-        .xnav.fixed .navmodal a,.xnav .navmodal a{
+    .xnav.fixed .navmodal a,.xnav .navmodal a{
             color: #f7f7f7 !important
+        }
+    .ourservices .ui.card>.content{
+            padding: 60px 10px !important
+        
+        }
+    .ourservices .first-row{
+            margin-top: unset !important;
+        }
+    .ourservices .xcontainer,.ourclients .xcontainer{
+           padding: 0px 10px !important;
         }
 }
