@@ -111,7 +111,8 @@ a{
     display: block
 }
 .ui.grid{
-    /* margin: 0px !important; */
+    margin-left: 0px !important;
+    margin-right: 0px !important;
 }
 .ui.dimmer{
     position: fixed !important
@@ -229,7 +230,8 @@ a{
 }
 .signin .left-grid{
     position: absolute;
-    width: -webkit-fill-available;
+    width: 100%;
+    left:0;
     background: url('../../images/china.jpg');
     height:-webkit-fill-available;
     text-align: center;
@@ -322,7 +324,7 @@ a{
     margin-top: -85px !important
 }
 .ourservices{
-    min-height: 400px;
+    min-height: 650px;
 }
 .ourservices .ui.card:hover{
     margin-top: -10px !important;
@@ -415,6 +417,8 @@ a{
     position: absolute;
     width: -webkit-fill-available;
     z-index: 1089;
+    top:0;
+    left: 0;
 transition: 0.2s ease-in;
 color: #fff
 
@@ -422,6 +426,7 @@ color: #fff
 
 .xnav.fixed{
 position: fixed;
+left: 0;
 transition: 0.2s ease-in;
 background: #fff;
 border-bottom: 1px solid #ddd;
@@ -436,18 +441,35 @@ color: #000;
 .xnav a{
     color: #fff !important
 }
-
-.navmodal,.commingsoon{
+.xnav .ui.basic.orange.button:hover{
+    background: #f26202 !important;
+    color:#eee !important
+}
+.navmodal{
     position:fixed;
     height: 100%;
+    overflow-y: auto;
     width: 100%;
     top:0;
+    left: 0;
     bottom: 0;
     background:rgba(0, 0, 0, 0.9);
     background-position: right;
     z-index: 2000;
     color:#f7f7f7;
     padding: 50px 0px; 
+}
+.commingsoon{
+    position:fixed;
+    height: 100%;
+    width: 100%;
+    top:0;
+    bottom: 0;
+    background: url("../images//darkbg.png");
+    background-position: right;
+    z-index: 2000;
+    color:#f7f7f7;
+    padding: 200px 0px; 
 }
 .navmodal a{
     color:#f7f7f7 !important;
@@ -531,10 +553,10 @@ color: #000;
 }
 footer{
     /* padding: 20px 40px; */
-    background : url('../../../images/world2.png'),#333;
-    background-position-y: bottom;
+    background : url('../../../images/darkbg.png'),#333;
+    background-position-y: 0px;
     background-position-x: right;
-    background-size: 40%;
+    background-size: 100%;
     background-repeat: no-repeat;
     color:#999;
     /* border-top:1px solid #eee */
@@ -570,8 +592,11 @@ footer button.ask{
     background: transparent !important;
     border: 1px solid #999 !important
 }
-
 @media (max-width:400px){
+    .ui.container{
+        margin-left: 0.5em !important;
+        margin-right: 0.5em !important;
+    }
     .home .second-section h1, .home .third-section h1,.about  .first-section h1, .request .first-section h1,.contact .first-section h1{
         font-size: 2em !important
     }
@@ -579,7 +604,10 @@ footer button.ask{
         font-size: 2em !important
     }
     .home .first-section{
-    padding: 160px 0px;
+    padding: 110px 0px;
+    margin-top:50px;
+    background-position-x: left;
+    min-height: 550px;
     }
     .request .first-section, .contact .first-section .content{
         padding: 100px 0px 50px !important
@@ -630,6 +658,9 @@ footer button.ask{
         padding-left: 0px !important;
         padding-right: 0px !important;
     }
+    .no-xspadding{
+        padding: 0px !important
+    }
     .message-box{
         position: relative;
         width: 100%;
@@ -641,8 +672,11 @@ footer button.ask{
     .signin input,.profile-card .edit-profile input{
         padding-left: 5px !important
     }
+    .signin form h3 {
+        text-align: center
+    }
     .navmodal{
-        width: 92%;
+        width: 100%;
         padding: 25px 0px
     }
     .modal-links{
@@ -694,4 +728,11 @@ footer button.ask{
     .ourservices .xcontainer,.ourclients .xcontainer{
            padding: 0px 10px !important;
         }
+    .scroll-top,.bottom-chatbox {
+            right: 10px;
+        }
+
+    .commingsoon{
+        padding: 150px 10px
+    }
 }
