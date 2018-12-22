@@ -28,7 +28,37 @@ function auth(req,res,next){
     next();
   }else res.json({error:"Please login to continue"})
 
-  
+}
+function mailer(email,message,subject){
+  const nodemailer = require('nodemailer');
+      let transporter = nodemailer.createTransport({
+        tls: {
+          rejectUnauthorized: false
+        },
+        host: 'smtp.sendgrid.net',
+        port: 465,
+        secure: true, // true for 465, false for other ports
+        auth: {
+          user: "apikey", // generated ethereal user
+          pass: process.env.SENDGRID_API_KEY // generated ethereal password
+        }
+      });
+      // setup email data with unicode symbols
+      const mailOptions = {
+        from: `support@reactangle.com`, // sender address
+        to: `${email}`, // list of receivers
+        subject: subject, // Subject line
+        // text: `${message}`, // plain text body
+        html:`<body style="background:#f7f7f7"><div style="width:90%; background:#fff; margin:10px auto 20px;font-family:Verdana, Geneva, Tahoma, sans-serif"><div style="background:#F4EEE2; padding:10px;color:rgb(248, 150, 166)"><center><h3>React Angle</h3></center></div><div style="padding:30px">${message} </div> <div style="background:#eee;height:2px;margin:10px 0px"></div><div style="padding:40px 20px;font-size:0.7em;color:#bbb"><center>Questions? Get your answers here: <a href="www.reactangle.herokuapp.com/faq" style="color:blue">Help Center</a></a>.</center></div></div><div style="font-size:0.7em;text-align:center;color:#bbb;width:35%;margin:auto"> All rights reserved</div></body>`
+      };
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          console.log(info)
+        }
+        // Preview only available when sending through an Ethereal account
+      })
 }
 //user Sign in route
 router.post('/api/login', function (req, res, next) {
@@ -81,52 +111,13 @@ router.post('/api/login', function (req, res, next) {
         User.create({
         password:hash, username, firstName, lastName, email, country
         })
-          // newUser.save()
           .then((user) => {
             if (user) {
               const token = jwt.sign({ ...user }, "1864")
-              const nodemailer = require('nodemailer');
-
-              let transporter = nodemailer.createTransport({
-
-                tls: {
-                  rejectUnauthorized: false
-                },
-                host: 'smtp.sendgrid.net',
-                port: 465,
-                secure: true, // true for 465, false for other ports
-                auth: {
-                  user: "apikey", // generated ethereal user
-                  pass: process.env.SENDGRID_API_KEY // generated ethereal password
-                }
-              });
-              // setup email data with unicode symbols
-              let mailOptions = {
-                from: '"Reactangle" <info@reactangle.com>', // sender address
-                to: `${email}`, // list of receivers
-                subject: 'Account Registration ✔', // Subject line
-                text: 'Hello?', // plain text body
-                headers: {
-                  "X-SMTPAPI": {
-                    "category": [
-                      "Orders"
-                    ]
-                  }
-                },
-                html: ' <body style="background:#f7f7f7"><div style="width:90%; background:#fff; margin:10px auto 20px;font-family:Verdana, Geneva, Tahoma, sans-serif"><div style="background:#F4EEE2; padding:10px;color:rgb(248, 150, 166)"><center><h3>reactangle</h3></center></div><div style="padding:30px"><center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://reactangle.com/signin" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center></div><div style="background:#eee;height:2px;margin:10px 0px"></div><div style="padding:40px 20px;font-size:0.7em;color:#bbb"><center>Questions? Get your answers here: <a href="" style="color:blue">Help Center</a></a>.</center></div></div><div style="font-size:0.7em;text-align:center;color:#bbb;width:35%;margin:auto">Tanke | , Ilorin, 224230 | Copyright © 2018 | All rights reserved</div></body>' // html body
-              };
-
-              // send mail with defined transport object
-              transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  return console.log(error);
-                }
-                console.log('Message sent: %s', info.messageId);
-                // Preview only available when sending through an Ethereal account
-                // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-                // Preview URL: https://ethereal.email/message/WaQKMgKddxQDoou...
-              });
-              // });
+              var subject= "Account Registration"
+              var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://reactangle.com/signin" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
+              mailer(email,message,subject)
+              mailer("habibmail31@gmail.com",`${firstName+" "+lastName+" registration was successful "}`,subject)
               res.json({ "success": "Account created successfully" })
             }
           }).catch((error) => { console.log(error); res.json({ error: { "server": "An error has occured" } }); })
@@ -134,9 +125,6 @@ router.post('/api/login', function (req, res, next) {
       })
     })
   })
-
-
-  // }
 })
   router.post("/api/changePassword",auth,(req,res)=>{
     const{oldPassword,newPassword} = req.body;
@@ -223,6 +211,9 @@ router.post("/api/createOffer",auth,(req,res)=>{
 })
 router.post("/api/submitReview",auth,(req,res)=>{
   var {rating,review} = req.body;
+  var subject = "New Review"
+  var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>${review}</small></p> <p>Rating:${rating}</p></center>`
+  mailer(email,message,subject)
   Reviews.create({rating,review,userID:req.userID})
   .then((succ)=>res.json({succ:"Your review has been submited successfully, Thank you"})).catch((error)=>console.log(error))
 })
@@ -232,6 +223,9 @@ router.post("/api/submitRequest",auth,(req,res)=>{
     length: 10,
     numbers: true
   });
+  var subject = "New Request"
+  var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>${message}</small></p> $${price}</center>`
+  mailer(email,message,subject)
   Message.create({ticket,senderID:req.userID,updated:new Date(),conversation:{senderID:req.userID,message,requestBudget:price}})
   .then((success)=>res.json({success:"Your request has been submited successfully. Please check your inbox"})).catch((error)=>{console.log(error);res.json({error:"An error has occured. please try again later"})})
 })
@@ -255,51 +249,21 @@ router.post('/api/reset', (req, res) => {
       });
       const hashedPassword = bcrypt.hashSync(password, 10);
       token = jwt.sign({ password: hashedPassword, email: email, date }, "1864")
-      const nodemailer = require('nodemailer');
-      let transporter = nodemailer.createTransport({
-        tls: {
-          rejectUnauthorized: false
-        },
-        host: 'smtp.sendgrid.net',
-        port: 465,
-        secure: true, // true for 465, false for other ports
-        auth: {
-          user: "apikey", // generated ethereal user
-          pass: process.env.SENDGRID_API_KEY // generated ethereal password
-        }
-      });
       // setup email data with unicode symbols
       const message = `<h4>Hi there</h4>
             <p>You have successfully reset your password. Here is your new password for future reference: ${password}.</p>
             <p>Thank you!</p>
           `;
-      const mailOptions = {
-        from: `support@kampuskonnect.com`, // sender address
-        to: `${email}`, // list of receivers
-        subject: `Password Reset`, // Subject line
-        // text: `${message}`, // plain text body
-        html: ' <body style="background:#f7f7f7"><div style="width:90%; background:#fff; margin:10px auto 20px;font-family:Verdana, Geneva, Tahoma, sans-serif"><div style="background:#F4EEE2; padding:10px;color:rgb(248, 150, 166)"><center><h3>kampus konnect</h3></center></div><div style="padding:30px"><center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>You have successfully reset your password. Here is your new password for future reference</small></p><h2>' + password + '</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Please click on this button below to change your password.</small></p><p style="margin: 30px"> <a href="https://kampuskonnect.herokuapp.com/reset_password/' + token + '" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Change your password</a></p></center></div><div style="background:#eee;height:2px;margin:10px 0px"></div><div style="padding:40px 20px;font-size:0.7em;color:#bbb"><center>Questions? Get your answers here: <a href="www.kampuskonnect.herokuapp.com/faq" style="color:blue">Help Center</a></a>.</center></div></div><div style="font-size:0.7em;text-align:center;color:#bbb;width:35%;margin:auto"> All rights reserved</div></body>' // html body
-        // html body
-
-      };
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log(error);
-          res.json({ "error": "Please try again later." })
-        } else {
-          console.log(info)
+      const subject = "Password reset"
+      mailer(email,message,subject)
           User.findOneAndUpdate({ email }, { password: hashedPassword }).then((pass) => {
             if (pass) {
               res.json({ "success": "Your password has been reset successfully. Please check your inbox" })
-            }
-          })
         }
         // Preview only available when sending through an Ethereal account
-
       })
     } else res.json({ error: "Please try again later" })
   }
-
   );
 })
   .post('/api/uploadPictures', (req, res, next) => {

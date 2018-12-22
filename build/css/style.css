@@ -551,6 +551,9 @@ color: #000;
     border-bottom: 1px solid #d7d7d8;
     background: #fff;
 }
+.epistle{
+    font-size: 1.3em
+}
 footer{
     /* padding: 20px 40px; */
     background : url('../../../images/darkbg.png'),#333;
@@ -734,5 +737,8 @@ footer button.ask{
 
     .commingsoon{
         padding: 150px 10px
+    }
+    .epistle{
+        font-size: 1.2em
     }
 }
