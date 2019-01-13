@@ -2,15 +2,12 @@ var express = require('express');
 var router = express.Router()
 var bcrypt = require('bcrypt');
 var User = require('../model/userModel');
-var Reviews = require('../model/reviewModel');
-var Message = require('../model/messages');
-var Newsletter = require('../model/newsletter');
 var generator = require("generate-password")
 var jwt = require('jsonwebtoken');
 var formidable = require('formidable');
 var cloudinary = require("cloudinary")
 var dotenv = require('dotenv')
-
+var axios = require('axios')
 dotenv.config();
 
 cloudinary.config({
@@ -21,7 +18,7 @@ cloudinary.config({
 function auth(req,res,next){
   var token =req.header("authorization");
   if(token){
-    var data = jwt.decode(token,"1864");
+    var data = jwt.decode(token,"streamers");
     req.userID = data.id;
     req.username = data.username
     req.role = data.role==="support"?data.role:null
@@ -45,11 +42,11 @@ function mailer(email,message,subject){
       });
       // setup email data with unicode symbols
       const mailOptions = {
-        from: `support@reactangle.com`, // sender address
+        from: `support@streamjar.com`, // sender address
         to: `${email}`, // list of receivers
         subject: subject, // Subject line
         // text: `${message}`, // plain text body
-        html:`<body style="background:#f7f7f7"><div style="width:90%; background:#fff; margin:10px auto 20px;font-family:Verdana, Geneva, Tahoma, sans-serif"><div style="background:#F4EEE2; padding:10px;color:rgb(248, 150, 166)"><center><h3>React Angle</h3></center></div><div style="padding:30px">${message} </div> <div style="background:#eee;height:2px;margin:10px 0px"></div><div style="padding:40px 20px;font-size:0.7em;color:#bbb"><center>Questions? Get your answers here: <a href="www.reactangle.herokuapp.com/faq" style="color:blue">Help Center</a></a>.</center></div></div><div style="font-size:0.7em;text-align:center;color:#bbb;width:35%;margin:auto"> All rights reserved</div></body>`
+        html:`<body style="background:#f7f7f7"><div style="width:90%; background:#fff; margin:10px auto 20px;font-family:Verdana, Geneva, Tahoma, sans-serif"><div style="background:#F4EEE2; padding:10px;color:rgb(248, 150, 166)"><center><h3>React Angle</h3></center></div><div style="padding:30px">${message} </div> <div style="background:#eee;height:2px;margin:10px 0px"></div><div style="padding:40px 20px;font-size:0.7em;color:#bbb"><center>Questions? Get your answers here: <a href="www.streamjar.herokuapp.com/faq" style="color:blue">Help Center</a></a>.</center></div></div><div style="font-size:0.7em;text-align:center;color:#bbb;width:35%;margin:auto"> All rights reserved</div></body>`
       };
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -80,13 +77,12 @@ router.post('/api/login', function (req, res, next) {
       if (user) {
         data.id = user._id
           data.username = username;
-          data.firstname= user.firstName;
-          data.lastname= user.lastName;
-          data.country = user.country;
+          data.email = user.email;
+          data.picture = user.profileDetails.picture;
           if(user.role=="support" && !user.country) data.role="support"
           bcrypt.compare(password, user.password).then((valid) => {
             if (valid) {
-              var token = jwt.sign(data, "1864").toString();
+              var token = jwt.sign(data, "streamers").toString();
               res.header('x-auth', token).json({ "token": token });
             } else res.json({ "error":  "Please enter a valid username/password", "password": "incorrect password"  })
           }).catch((error) => (console.log(error)));
@@ -100,30 +96,37 @@ router.post('/api/login', function (req, res, next) {
 })
 
 .post("/api/signup", (req, res, next) => {
-  let time = new Date();
-  const { username, password, firstName, lastName, email, country} = req.body
+  const { username, password, email, imageUrl} = req.body
   User.findOne({username:username}).then((user)=>{
     if(user) return res.json({error:"This username is not available"})
     User.findOne({ email: email }).then((user) => {
       if (user) return res.json({ error:  `${email} is is not available`})
       bcrypt.hash(password, 10).then((hash) => {
-
         User.create({
-        password:hash, username, firstName, lastName, email, country
+        password:hash, username, email, profileDetails:{picture:imageUrl} 
         })
           .then((user) => {
             if (user) {
-              const token = jwt.sign({ ...user }, "1864")
+              const token = jwt.sign({ ...user }, "streamers")
               var subject= "Account Registration"
-              var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://reactangle.com/signin" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
+              var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://streamjar.com/signin" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
               mailer(email,message,subject)
-              mailer("habibmail31@gmail.com",`${firstName+" "+lastName+" registration was successful "}`,subject)
               res.json({ "success": "Account created successfully" })
             }
           }).catch((error) => { console.log(error); res.json({ error: { "server": "An error has occured" } }); })
-
       })
     })
+  })
+})
+.post("/api/socialLogin", (req, res, next) => {
+  const { username, password, email, imageUrl} = req.body
+  User.findOne({username:username}).then((user)=>{
+    if(user){
+       return axios.post(`http://${req.headers.host}/api/login`,req.body)
+       .then((response)=>{
+         res.header('x-auth', response.data.token).json({ "token": response.data.token })
+       }).catch((err)=>console.log(err))
+    }
   })
 })
   router.post("/api/changePassword",auth,(req,res)=>{
@@ -140,6 +143,11 @@ router.post('/api/login', function (req, res, next) {
     })
     })
   })
+  router.post("/api/search",(req,res)=>{
+    var {query} = req.body
+    User.find({"username":{$regex:query}}).then((users)=>res.json({users})).catch((err)=>console.log(err))
+  })
+
 router.post("/api/updateProfile",auth,(req,res)=>{
 
   User.findOneAndUpdate({"_id":req.userID},req.body).then((success)=>{
@@ -158,84 +166,19 @@ router.get("/api/getProfile",auth,(req,res)=>{
     else res.json({error:"An error has occured. please try again later"})
   })
 })
-
-router.get("/api/getReviews",(req,res)=>{
-  Reviews.find().sort({"_id":-1}).populate("userID",{"firstName":"firstName","lastName":"lastName","username":"username","country":"country"}).exec().then((reviews)=>{
-    if(reviews)res.json({reviews})
-  })
-})
-router.get("/api/getMessages",auth,(req,res)=>{
-  req.role==="support"?
-  Message.find().sort({"_id":-1}).populate("senderID",{"username":"username","firstName":"firstName","lastName":"lastName","email":"email","country":"country",regDate:"regDate",description:"description"}).exec().then((messages)=>{
-    if(messages)res.json({messages})
-  }) :
-  Message.find({senderID:req.userID}).sort({"_id":-1}).then((messages)=>{
-    if(messages)res.json({messages})
-  }) 
-})
-router.get("/api/getRequestById",auth,(req,res)=>{
-  var {r,c} = req.query;
-  
-  Message.findById({_id:c}).then((conv)=>{
-    if(conv){
-     var order,offer={}; var ticket = conv.ticket;
-     conv.conversation.map((msg)=>{
-       if(msg.requestBudget)  order = msg.message;
-       if(msg._id==r){
-        offer.offerDesc = msg.offerDesc
-        offer.offerTitle = msg.offerTitle
-        offer.offerBudget = msg.offerBudget
-        offer.offerDuration = msg.offerDuration
-      }
-     });
-     offer.order = order;
-     offer.ticket = ticket;
-     if(offer.order) res.json({offer})
+router.get("/api/getUser",(req,res)=>{
+  User.findOne({username:req.query.username}).then((user)=>{
+    if(user){
+      res.json({user})
     }
-  }) 
-})
-
-router.post("/api/updateChat",auth,(req,res)=>{
-  var {message,conversationID} = req.body;
-  Message.update({ _id: conversationID }, {updated:new Date(), $push: { conversation: { message, senderID:req.userID} } })
-  .then((success)=>{
-    res.json({data:{message,senderID:req.userID, date:new Date()},conversationID})
+    else res.json({error:"An error has occured. please try again later"})
   })
 })
-router.post("/api/createOffer",auth,(req,res)=>{
-  var {offerTitle,offerDesc,offerBudget,offerDuration,conversationID} = req.body;
-  Message.update({ _id: conversationID }, {updated:new Date(), $push: { conversation: {offerTitle,offerDesc,offerBudget,offerDuration,senderID:req.userID,message:"Here is an offer"} } })
-  .then((success)=>{
-    res.json({success:"Offer created successfully",data:{offerTitle,offerDesc,offerBudget,offerDuration,senderID:req.userID, date:new Date()},conversationID})
-  }).catch((err)=>console.log(err))
+router.get("/api/getUsers",(req,res)=>{
+  User.find().limit(10).then((users)=>{
+      res.json({users})
+  })
 })
-router.post("/api/submitReview",auth,(req,res)=>{
-  var {rating,review} = req.body;
-  var subject = "New Review"
-  var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>${review}</small></p> <p>Rating:${rating}</p></center>`
-  mailer(email,message,subject)
-  Reviews.create({rating,review,userID:req.userID})
-  .then((succ)=>res.json({succ:"Your review has been submited successfully, Thank you"})).catch((error)=>console.log(error))
-})
-router.post("/api/submitRequest",auth,(req,res)=>{
-  var {message,price} = req.body;  
-  var ticket = generator.generate({
-    length: 10,
-    numbers: true
-  });
-  var subject = "New Request"
-  var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>${message}</small></p> $${price}</center>`
-  mailer(email,message,subject)
-  Message.create({ticket,senderID:req.userID,updated:new Date(),conversation:{senderID:req.userID,message,requestBudget:price}})
-  .then((success)=>res.json({success:"Your request has been submited successfully. Please check your inbox"})).catch((error)=>{console.log(error);res.json({error:"An error has occured. please try again later"})})
-})
-router.post("/api/submitNewsletter",(req,res)=>{
-  Newsletter.findOne({email: req.body.email}).then((exist)=>{
-    if(exist === null){
-        Newsletter.create({email:req.body.email}).then((success)=>res.json({success:'You have successfully opted in for our monthly newsletter. Thank you'}))
-}else res.json({error:"You currently have an active subscription"})
-  }).catch((err)=>console.log(err))
-}) 
 
 router.post('/api/reset', (req, res) => {
   const { email } = req.body;
@@ -248,7 +191,7 @@ router.post('/api/reset', (req, res) => {
         numbers: true
       });
       const hashedPassword = bcrypt.hashSync(password, 10);
-      token = jwt.sign({ password: hashedPassword, email: email, date }, "1864")
+      token = jwt.sign({ password: hashedPassword, email: email, date }, "streamers")
       // setup email data with unicode symbols
       const message = `<h4>Hi there</h4>
             <p>You have successfully reset your password. Here is your new password for future reference: ${password}.</p>

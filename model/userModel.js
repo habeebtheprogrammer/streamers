@@ -1,11 +1,12 @@
 var mongoose = require('../config/mongoose');
 //user schema
 var userSchema = mongoose.Schema({
-    firstName: {
+    accountID: {
         type: String,
     },
-    lastName: {
+    email: {
         type: String,
+        trim: true
     },
     username: {
         type: String,
@@ -13,42 +14,52 @@ var userSchema = mongoose.Schema({
     password: {
         type: String,
     },
-    location: {
-        type: String,
+    totalEarned: {
+        type: Number,
+        default: 0
     },
-    role: {
-        type: String,
-        default:"client"
+    amountUnpaid: {
+        type: Number,
+        default: 0
     },
-    phone:{
+    referralEarnings:{
+        type:Number,
+        default:0
+    },
+    payPercentage: {
+        type: Number
+    },
+    referralPercentage:{
+        type:Number,
+        default:0
+    },
+    referredBy:{
         type:String
     },
-    dpUrl: {
-        type: String
-    },
-    twitter:{
+    numReferrals:{
         type:String
     },
-    facebook:{
-        type:String
+    banned: {
+        type: Boolean,
+        default:false
     },
-    description:{
-        type:String
+    profileDetails: {
+        picture: String,
+        description:String
     },
-    email: {
-        type: String,
-        trim: true
+    paymentDetails: {
+        fullName:String,
+        paymentMethod:{
+            paypalEmail:String,
+        }
     },
-    regDate: {
-        type: Date,
-        default: Date.now
-    },
-    country: {
-        type: String
+    date:{
+        type:Date,
+        default:Date.now
     }
    
 })
-userSchema.index({ username: 'text', location:"text", fullName:"text"});
+userSchema.index({ username: 'text'});
 var User = mongoose.model('users', userSchema);
 
 module.exports = User;
