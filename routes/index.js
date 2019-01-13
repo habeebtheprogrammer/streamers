@@ -46,7 +46,7 @@ function mailer(email,message,subject){
         to: `${email}`, // list of receivers
         subject: subject, // Subject line
         // text: `${message}`, // plain text body
-        html:`<body style="background:#f7f7f7"><div style="width:90%; background:#fff; margin:10px auto 20px;font-family:Verdana, Geneva, Tahoma, sans-serif"><div style="background:#F4EEE2; padding:10px;color:rgb(248, 150, 166)"><center><h3>React Angle</h3></center></div><div style="padding:30px">${message} </div> <div style="background:#eee;height:2px;margin:10px 0px"></div><div style="padding:40px 20px;font-size:0.7em;color:#bbb"><center>Questions? Get your answers here: <a href="www.streamjar.herokuapp.com/faq" style="color:blue">Help Center</a></a>.</center></div></div><div style="font-size:0.7em;text-align:center;color:#bbb;width:35%;margin:auto"> All rights reserved</div></body>`
+        html:`<body style="background:#f7f7f7"><div style="width:90%; background:#fff; margin:10px auto 20px;font-family:Verdana, Geneva, Tahoma, sans-serif"><div style="background:#F4EEE2; padding:10px;color:rgb(248, 150, 166)"><center><h3>StreamJar</h3></center></div><div style="padding:30px">${message} </div> <div style="background:#eee;height:2px;margin:10px 0px"></div><div style="padding:40px 20px;font-size:0.7em;color:#bbb"><center>Questions? Get your answers here: <a href="www.streamjar.herokuapp.com/faq" style="color:blue">Help Center</a></a>.</center></div></div><div style="font-size:0.7em;text-align:center;color:#bbb;width:35%;margin:auto"> All rights reserved</div></body>`
       };
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
@@ -109,7 +109,7 @@ router.post('/api/login', function (req, res, next) {
             if (user) {
               const token = jwt.sign({ ...user }, "streamers")
               var subject= "Account Registration"
-              var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://streamjar.com/signin" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
+              var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://streamjar-beta.herokuapp.com" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
               mailer(email,message,subject)
               res.json({ "success": "Account created successfully" })
             }
@@ -119,13 +119,34 @@ router.post('/api/login', function (req, res, next) {
   })
 })
 .post("/api/socialLogin", (req, res, next) => {
-  const { username, password, email, imageUrl} = req.body
+  const { username, password, email, imageUrl} = req.body;
+  var url = process.env.PORT?"https://streamjar-beta.herokuapp.com":"http://localhost:4000"
   User.findOne({username:username}).then((user)=>{
     if(user){
-       return axios.post(`http://${req.headers.host}/api/login`,req.body)
+      console.log(url)
+       return axios.post(url+"/api/login",req.body)
        .then((response)=>{
          res.header('x-auth', response.data.token).json({ "token": response.data.token })
        }).catch((err)=>console.log(err))
+    }else{
+      bcrypt.hash(password, 10).then((hash) => {
+        User.create({
+        password:hash, username, email, profileDetails:{picture:imageUrl} 
+        })
+          .then((user) => {
+            if (user) {
+              const token = jwt.sign({ ...user }, "streamers")
+              var subject= "Account Registration"
+              var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://streamjar-beta.herokuapp.com" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
+              mailer(email,message,subject)
+              return axios.post(url+"/api/login",req.body)
+              .then((response)=>{
+                res.header('x-auth', response.data.token).json({ "token": response.data.token })
+              }).catch((err)=>console.log(err))
+              
+            }
+          }).catch((error) => { console.log(error); res.json({ error: { "server": "An error has occured" } }); })
+      })
     }
   })
 })

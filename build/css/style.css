@@ -82,7 +82,7 @@ a{
 .scroll-top{
     position: fixed;
     right: 20px;
-    bottom:120px;
+    bottom:20px;
     text-align: center
 }
 .side-widget{
@@ -121,122 +121,15 @@ a{
     padding: 0px;
 }
 
-.request .first-section{
-    padding: 120px 0px 50px
-}
-.request .stepone{
-    padding: 0px 0px 50px;
-}
-.contact section
-{
-    padding: 30px 0px
-}
-.contact .large-comment{
-    background:linear-gradient( 45deg, rgb(243, 118, 55) 0%,rgb(32, 30, 32) 100%);
-    padding: 50px;
-    color: #fff
-}
-.contact .large-comment::before{
-    position: absolute;
-    content: "";
-    border-style: solid;
-    border-width: 20px;
-    top: 201px;
-    left: 50px;
-    border-top-color: #ea6d33;
-    border-right-color: transparent;
-    border-left-color: transparent;
-    border-bottom-color: transparent;
-    z-index: 10;
-}
-
-.contact .large-comment span{
-    font-size: 1.1em;
-}
-.contact .first-section{
-    background:#fff url('../images/china.jpg');
-    background-position:bottom;
-    color:#fff;
-    background-attachment:fixed
-}
-.contact .content{
-    padding:150px 0px 60px;
-    color:#fff
-}
-.contact input::placeholder{
-    color: #888 !important;
-    font-size: 0.8em !important
-}
-.contact label{
-    font-size: 1em !important;
-    font-weight: bolder;
-}
-.contact .ui.card{
-    color: #000 !important;
-    box-shadow: 0 1px 1px 0 #ddd !important;
-    font-size: 1.1em !important
-}
- .form-box{
-    padding: 30px;
-    background: #fff;
-    border: 1px solid #eee
-}
-.affiliates .first-section,.misc .first-section{
-    background:url('../images/bg.jpg');
-    background-position:center;
-    color:#fff;
-    background-attachment:fixed;
-    background-position: bottom;
-    padding:180px 0px 150px;
-    overflow: hidden;
-}
-.affiliates .second button {
-    margin-top: 20px !important
-}
-.about .features{
-    background: rgb(45,47,50) url('../../images/code.jpg') no-repeat;
-    background-size: 60%;
-    background-position-x: right;
-    background-position-y: bottom;
-    padding: 50px 0px;
-    color: #eee;
-
-}
-
-.about .feature-box{
-    padding: 20px 10px;
-    box-shadow: 0 3px 5px 0 #111;
-    color:#aaa;
-    text-align: center
-}
-.about .feature-box i{
-    color: #ccc
-}
-.about .feature-box p{
-    font-size: 0.8em;
-    text-transform: uppercase;
-    font-weight: bolder;
-}
-.about .first-section h1{
-    font-size:3em;
-}
-.about .first-section .content{
-    padding: 300px 0px;
-}
-.about .first-section{
-    background:#e0e0e0 url('../images/react-desk.jpg') no-repeat;
-    background-size:100%;
-    text-align: center;
-}
 .signin .left-grid{
     position: absolute;
     width: 100%;
     left:0;
-    background: url('../../images/china.jpg');
+    background: url('../../images/darkbg.png');
     height:-webkit-fill-available;
     text-align: center;
     background-position: top;
-    color: #000;
+    color: #eee;
     padding: 150px 10px 10px
 }
 .signin .right-grid{
@@ -284,82 +177,44 @@ a{
     font-weight: bolder;
 
 }
-.ourclients{
-    padding:50px 0px;
-    background:#fff;
-    min-height: 700px
-}
-
-.ourclients .ui.card{
-    border: unset !important;
-    border-radius: unset !important;
-    box-shadow: 0 1px 6px 0 #ddd !important;
-    cursor: pointer;
-}
-.ourclients .ui.card:hover{
-   margin-top: -10px !important;
-   transition: 0.2s ease-in
-}
-.ourclients .ui.card>.content.first{
-    padding: 70px 30px !important
-}
-.ourclients .ui.card>.content.second{
-    padding: 30px  30px!important;
-    background:#ce670f;
-}
-.ourclients h1{
-    margin: 20px 0px 40px !important;
-    font-size: 2.5em
-}
-.ourclients h5{
-    border-bottom: 5px solid #c8632a;
-    display: inline-block;
-    padding-bottom: 10px;
-}
-.ourclients .content.second div{
-    color: #fff !important
-
-}
-.ourclients img{
-    margin-top: -85px !important
-}
-.ourservices{
-    min-height: 650px;
-}
-.ourservices .ui.card:hover{
-    margin-top: -10px !important;
-    transition: 0.2s ease-in
-}
-.ourservices .ui.card>.content{
-    padding: 60px 30px !important
-}
-.ourservices .first-row{
-    margin-top: -70px !important;
-    
-}
-.ourservices .ui.card{
-    border: unset !important;
-    border-radius: unset !important;
-    box-shadow: 0 1px 6px 0 #ddd !important;
-    cursor: pointer;
-}
-
-.ourservices .xcontainer,.ourclients .xcontainer{
-    padding: 20px 80px !important;
- }
-.home .first-section{
+.misc .first-section{
     background:#000 url('../images/home-parrot-main-react.png');
     background-position:right;
     background-size:cover;
     color:#eee;
     background-attachment:fixed;
-    padding: 200px 10px 250px;
+    padding: 150px 10px ;
+    text-align: center;
+    position: relative;
+}
+.misc .second-section{
+    padding: 30px 10px ;
+}
+.misc .ui.loading.form:after{
+    font-size: 0.3em !important
+}
+.dashboard .first-section{
+    background:#000 url('../images/home-parrot-main-react.png');
+    background-position:right;
+    background-size:cover;
+    color:#eee;
+    background-attachment:fixed;
+    padding: 100px 10px ;
+    text-align: center
+}
+.home .first-section{
+    /* background:#000 url('../images/darkbg.png');
+    background-position:right;
+    background-size:cover;
+    color:#eee;
+    background-attachment:fixed; */
+    padding: 150px 10px 30px;
 }
 .home .first-section h1{
     font-size: 2.5em !important
 }
 .home .second-section{
-    padding:100px 0px;background:url('../images/apps.png');
+    padding:100px 0px;
     background-size:60%;
     background-position:right;
     background-repeat:no-repeat;
@@ -382,38 +237,13 @@ a{
 .home .xlgicon i{
     font-size: 5em !important
 }
-.reviews .ui.card{
-    box-shadow: 0 1px 4px 0 #eee !important
-}
-.chat .event{
-    padding: 10px 10px !important;
-    border-top: 1px solid #ddd !important
-}
-.chat .messages .event{
-    border-top: unset !important
-}
-.chat .event:hover{
-    background: #f8f8f8 !important
-}
-.chat .event.active{
-    background: rgba(243, 118, 55,0.4) !important
-}
-.chat .event .content .text.extra{
-    white-space: pre-wrap
-}
-.chat .event .content .header{
-    text-transform: capitalize
-}
-.chat .xheight{
-    max-height: 450px;
-    overflow: auto;
-}
 .xnav .ui.horizontal.list>.item a{
     /* margin-left: 20px !important; */
     font-weight: bolder;
 }
 .xnav{
     /* border-bottom: 1px solid #ddd; */
+    /* background: #fff; */
     position: absolute;
     width: -webkit-fill-available;
     z-index: 1089;
@@ -540,27 +370,20 @@ color: #000;
     display: block;
     transition: 0.2s ease-in;
 }
-.bottom-section .b-box{
-    padding:80px 10px;
-    text-align:center;
-    font-size:1.2em;
-    font-weight:bolder;
-}
-.bottom-section{
-    border-top: 1px solid #d7d7d8;
-    border-bottom: 1px solid #d7d7d8;
-    background: #fff;
-}
-.epistle{
+.home .epistle{
     font-size: 1.3em
+}
+.dashboard .epistle{
+    font-size: 1em
 }
 footer{
     /* padding: 20px 40px; */
-    background : url('../../../images/darkbg.png'),#333;
+    background :#111 url("../images/darkbg.png");
     background-position-y: 0px;
     background-position-x: right;
     background-size: 100%;
     background-repeat: no-repeat;
+    background-attachment: fixed;
     color:#999;
     /* border-top:1px solid #eee */
 }
@@ -694,7 +517,7 @@ footer button.ask{
     }
     .navmodal a{
         float: unset !important;
-        font-size: 0.9em;
+        /* font-size: 0.9em; */
         display: block;
     }
     footer .main-footer{
