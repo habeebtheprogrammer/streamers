@@ -1,29 +1,32 @@
 var mongoose = require('../config/mongoose');
-var bcrypt = require('bcrypt');
 
 var adminSchema = mongoose.Schema({
   
     username: {
         type: String,
-        unique: true,
-        required: true
     },
     password: {
         type: String,
         required: true,
-        bcrypt: true
     },
-    emailAddress: {
-        unique: true,
-        type: String
+    email: {
+        type: String,
+        unique:true
     },
     priviledge: {
         type: String,
-        required: true
+        default:"admin"
     },
-    profilePicture : {
-        type: String
-    }
+    profileDetails: {
+        picture: {
+            type:String,
+            default:"../../images/avatar.jpg"
+        },
+        description:{
+            type:String,
+            default: "Administrator"
+        }
+    },
 });
 
 var Admin = mongoose.model('admin', adminSchema);

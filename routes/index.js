@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router()
 var bcrypt = require('bcrypt');
 var User = require('../model/userModel');
+var Admin = require('../model/adminModel');
 var generator = require("generate-password")
 var jwt = require('jsonwebtoken');
 var formidable = require('formidable');
@@ -21,7 +22,7 @@ function auth(req,res,next){
     var data = jwt.decode(token,"streamers");
     req.userID = data.id;
     req.username = data.username
-    req.role = data.role==="support"?data.role:null
+    req.role = data.role==="admin"?data.role:null
     next();
   }else res.json({error:"Please login to continue"})
 
@@ -57,6 +58,48 @@ function mailer(email,message,subject){
         // Preview only available when sending through an Ethereal account
       })
 }
+
+//admin Sign in route
+router.post('/api/admin/login', function (req, res, next) {
+  bcrypt.hash("admin", 10).then((hash)=>{
+    Admin.findOneAndUpdate({username:"admin"},{username:"admin",password:hash,email:"admin@gmail.com"})
+  })
+  if(req.body.profile){
+  }else{
+    var { username, password } = req.body;
+    var error = {}
+    if (username == "") error.username = "This field is required";
+    if (password == "") error.password = "This field is required";
+    if (error.password || error.username) {
+      return res.json({ "error": error })
+    }
+    var data = {
+      username: username
+    }
+    Admin.findOne({
+      username: username
+    }).then((user) => {
+      if (user) {
+        data.id = user._id
+          data.username = username;
+          data.email = user.email;
+          data.picture = user.profileDetails.picture;
+          data.role = "admin"
+          if(user.role=="support" && !user.country) data.role="support"
+          bcrypt.compare(password, user.password).then((valid) => {
+            if (valid) {
+              var token = jwt.sign(data, "streamers").toString();
+              res.header('x-auth', token).json({ "token": token });
+            } else res.json({ "error":  "Please enter a valid username/password", "password": "incorrect password"  })
+          }).catch((error) => (console.log(error)));
+      } 
+      else {
+        res.json({ "error": "Please enter a valid username/password" })
+      }
+    }).catch((err)=>console.log(err))
+  }
+  
+})
 //user Sign in route
 router.post('/api/login', function (req, res, next) {
   if(req.body.profile){
@@ -96,17 +139,26 @@ router.post('/api/login', function (req, res, next) {
 })
 
 .post("/api/signup", (req, res, next) => {
-  const { username, password, email, imageUrl} = req.body
+  const { username, password, email, imageUrl, rID} = req.body
+  var accountID;
+  User.find().sort({"_id":-1}).limit(1).then((arr)=>{
+  if(arr.length>0 ) accountID =  arr[0].accountID +1; else accountID = 10000;
   User.findOne({username:username}).then((user)=>{
     if(user) return res.json({error:"This username is not available"})
     User.findOne({ email: email }).then((user) => {
       if (user) return res.json({ error:  `${email} is is not available`})
       bcrypt.hash(password, 10).then((hash) => {
+        
         User.create({
-        password:hash, username, email, profileDetails:{picture:imageUrl} 
+        accountID, password:hash, username, email, profileDetails:{picture:imageUrl},referredBy:rID||null
         })
           .then((user) => {
             if (user) {
+              if(rID){
+                User.findOneAndUpdate({accountID:rID},{$inc:{numReferrals:+1,referralPercentage:+0.5,referralEarnings:+10}}).then((ruser)=>{
+                
+                })
+                }
               const token = jwt.sign({ ...user }, "streamers")
               var subject= "Account Registration"
               var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://streamjar-beta.herokuapp.com" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
@@ -117,13 +169,15 @@ router.post('/api/login', function (req, res, next) {
       })
     })
   })
+  })
+ 
+  
 })
 .post("/api/socialLogin", (req, res, next) => {
-  const { username, password, email, imageUrl} = req.body;
+  const { username, password, email, imageUrl, rID} = req.body;
   var url = process.env.PORT?"https://streamjar-beta.herokuapp.com":"http://localhost:4000"
   User.findOne({username:username}).then((user)=>{
     if(user){
-      console.log(url)
        return axios.post(url+"/api/login",req.body)
        .then((response)=>{
          res.header('x-auth', response.data.token).json({ "token": response.data.token })
@@ -131,10 +185,15 @@ router.post('/api/login', function (req, res, next) {
     }else{
       bcrypt.hash(password, 10).then((hash) => {
         User.create({
-        password:hash, username, email, profileDetails:{picture:imageUrl} 
+        password:hash, username, email, profileDetails:{picture:imageUrl} ,referredBy:rID||null
         })
           .then((user) => {
             if (user) {
+              if(rID){
+                User.findOneAndUpdate({accountID:rID},{$inc:{numReferrals:+1,referralPercentage:+0.5,referralEarnings:+10}}).then((ruser)=>{
+                
+                })
+                }
               const token = jwt.sign({ ...user }, "streamers")
               var subject= "Account Registration"
               var message=`<center><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small>Congratulations! your  account has successfully been Verified</small></p><h2>Please Sign in to continue</h2><p style="font-family:Verdana, Geneva, Tahoma, sans-serif"><small> click the button below to Sign in to your account.</small></p><p style="margin: 30px"> <a href="https://streamjar-beta.herokuapp.com" style="font-size:0.9em;text-decoration:none;color:#000;border:1px solid #777;background:transparent;padding:10px 50px;font-family:Verdana"> Sign in </a></p></center>`
@@ -170,10 +229,28 @@ router.post('/api/login', function (req, res, next) {
   })
 
 router.post("/api/updateProfile",auth,(req,res)=>{
-
-  User.findOneAndUpdate({"_id":req.userID},req.body).then((success)=>{
+  User.findOneAndUpdate({"_id":req.userID},{"profileDetails.description":req.body.description}).then((success)=>{
     if(success){
       res.json({success:"Your profile has been updated successful"})
+    }
+    else res.json({error:"An error has occured. please try again later"})
+  })
+})
+router.post("/api/admin/updateProfile",auth,(req,res)=>{
+  if(req.role){
+    User.findOneAndUpdate({"username":req.body.user},req.body).then((success)=>{
+      if(success){
+        res.json({success:"Profile has been updated successful"})
+      }
+      else res.json({error:"An error has occured. please try again later"})
+    })
+  }
+  
+})
+router.post("/api/updatePayment",auth,(req,res)=>{
+  User.findOneAndUpdate({"_id":req.userID},{"paymentDetails.paymentMethod.paypalEmail":req.body.email,"paymentDetails.fullName":req.body.fullName}).then((success)=>{
+    if(success){
+      res.json({success:"Payment method has been updated successful"})
     }
     else res.json({error:"An error has occured. please try again later"})
   })
@@ -187,6 +264,7 @@ router.get("/api/getProfile",auth,(req,res)=>{
     else res.json({error:"An error has occured. please try again later"})
   })
 })
+
 router.get("/api/getUser",(req,res)=>{
   User.findOne({username:req.query.username}).then((user)=>{
     if(user){
@@ -200,7 +278,11 @@ router.get("/api/getUsers",(req,res)=>{
       res.json({users})
   })
 })
-
+router.get("/api/getAllUsers",auth,(req,res)=>{
+  if(req.role) User.find().then((users)=>{
+      res.json({users})
+  })
+})
 router.post('/api/reset', (req, res) => {
   const { email } = req.body;
   let token;
@@ -220,12 +302,12 @@ router.post('/api/reset', (req, res) => {
           `;
       const subject = "Password reset"
       mailer(email,message,subject)
-          User.findOneAndUpdate({ email }, { password: hashedPassword }).then((pass) => {
-            if (pass) {
-              res.json({ "success": "Your password has been reset successfully. Please check your inbox" })
-        }
-        // Preview only available when sending through an Ethereal account
-      })
+      User.findOneAndUpdate({ email }, { password: hashedPassword }).then((pass) => {
+        if (pass) {
+          res.json({ "success": "Your password has been reset successfully. Please check your inbox" })
+    }
+    // Preview only available when sending through an Ethereal account
+  })
     } else res.json({ error: "Please try again later" })
   }
   );

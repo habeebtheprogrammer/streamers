@@ -120,7 +120,14 @@ a{
 .ui.basic.segment{
     padding: 0px;
 }
-
+.xloader{
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    background: #fff;
+    z-index: 1029;
+}
 .signin .left-grid{
     position: absolute;
     width: 100%;
@@ -138,6 +145,32 @@ a{
     height:  -webkit-fill-available;
     background: #fff;
     padding: 150px 10px 10px
+
+}
+
+.admin .left-grid{
+    position: absolute;
+    width: 100%;
+    left:0;
+    background: url('../../images/darkbg.png');
+    height:-webkit-fill-available;
+    text-align: center;
+    background-position: top;
+    color: #eee;
+    padding: 150px 10px 10px
+}
+.admin .left-grid a{
+    color: #fff !important;
+    font-size: 1.3em;
+    font-weight: bolder;
+}
+.admin .right-grid{
+    position: absolute;
+    width: -webkit-fill-available;
+    height:  -webkit-fill-available;
+    background: #fff;
+    padding-right: 50px;
+    padding-top: 100px
 
 }
 .signin input,.profile-card .edit-profile input{
@@ -530,6 +563,7 @@ footer button.ask{
         padding-left: 10px!important;
         padding-right: 10px!important;
     }
+
     .hide-xs{
         display: none
     }

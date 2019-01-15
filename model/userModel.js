@@ -2,7 +2,7 @@ var mongoose = require('../config/mongoose');
 //user schema
 var userSchema = mongoose.Schema({
     accountID: {
-        type: String,
+        type: Number,
     },
     email: {
         type: String,
@@ -27,31 +27,39 @@ var userSchema = mongoose.Schema({
         default:0
     },
     payPercentage: {
-        type: Number
+        type: Number,
+        default: 0
     },
     referralPercentage:{
         type:Number,
         default:0
     },
     referredBy:{
-        type:String
+        type: Number
     },
     numReferrals:{
-        type:String
+        type:Number,
+        default:0
     },
     banned: {
         type: Boolean,
         default:false
     },
     profileDetails: {
-        picture: String,
-        description:String
+        picture: {
+            type:String,
+            default:"../../images/avatar.jpg"
+        },
+        description:{
+            type:String,
+            default: "Hi there, i am new to streamjar. you can tip me for free without spending your hard earned money"
+        }
     },
     paymentDetails: {
         fullName:String,
         paymentMethod:{
             paypalEmail:String,
-        }
+        }   
     },
     date:{
         type:Date,
