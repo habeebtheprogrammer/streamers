@@ -139,7 +139,7 @@ router.post('/api/login', function (req, res, next) {
 })
 
 .post("/api/signup", (req, res, next) => {
-  const { username, password, email, imageUrl, rID} = req.body
+  var { username, password, email, imageUrl, rID} = req.body
   var accountID;
   User.find().sort({"_id":-1}).limit(1).then((arr)=>{
   if(arr.length>0 ) accountID =  arr[0].accountID +1; else accountID = 10000;
@@ -148,9 +148,9 @@ router.post('/api/login', function (req, res, next) {
     User.findOne({ email: email }).then((user) => {
       if (user) return res.json({ error:  `${email} is is not available`})
       bcrypt.hash(password, 10).then((hash) => {
-        
+        rID = rID||null;
         User.create({
-        accountID, password:hash, username, email, profileDetails:{picture:imageUrl},referredBy:rID||null
+        accountID, password:hash, username, email, profileDetails:{picture:imageUrl},referredBy:rID
         })
           .then((user) => {
             if (user) {
@@ -165,7 +165,7 @@ router.post('/api/login', function (req, res, next) {
               mailer(email,message,subject)
               res.json({ "success": "Account created successfully" })
             }
-          }).catch((error) => { console.log(error); res.json({ error: { "server": "An error has occured" } }); })
+          }).catch((error) => { console.log(error); res.json({ error:  "An error has occured"  }); })
       })
     })
   })
