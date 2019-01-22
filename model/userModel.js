@@ -28,7 +28,7 @@ var userSchema = mongoose.Schema({
     },
     payPercentage: {
         type: Number,
-        default: 0
+        default: 80
     },
     referralPercentage:{
         type:Number,

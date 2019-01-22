@@ -255,6 +255,34 @@ router.post("/api/updatePayment",auth,(req,res)=>{
     else res.json({error:"An error has occured. please try again later"})
   })
 })
+router.post("/api/postback",(req,res)=>{
+  var {accountID,payout,referredBy} = req.body
+  console.log(req.body)
+  User.findOne({"accountID":accountID}).then((user)=>{
+    if(user){
+      var totalEarned = user.totalEarned + (payout*0.8)
+      var amountUnpaid = user.amountUnpaid + (payout*0.8)
+      User.update({"_id":user._id},{totalEarned,amountUnpaid}).then((success)=>{
+        if(success){
+          console.log(success)
+          res.json(success)
+        }
+      })
+    }
+  })
+  User.findOne({"accountID":referredBy}).then((user)=>{
+    if(user){
+      var totalEarned = user.totalEarned + (payout*0.8)
+      var amountUnpaid = user.amountUnpaid + (payout*0.8)
+      var referralEarnings = user.referralEarnings + (payout*0.8)
+      User.update({"_id":user._id},{totalEarned,amountUnpaid,referralEarnings}).then((success)=>{
+        if(success){
+          res.json(success)
+        }
+      })
+    }
+  })
+})
 
 router.get("/api/getProfile",auth,(req,res)=>{
   User.findById(req.userID).then((user)=>{
