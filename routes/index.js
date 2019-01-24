@@ -118,6 +118,7 @@ router.post('/api/login', function (req, res, next) {
       username: username
     }).then((user) => {
       if (user) {
+        if(user.banned == true) return res.json({"error":"Your account has been suspended."})
         data.id = user._id
           data.username = username;
           data.email = user.email;
@@ -257,31 +258,29 @@ router.post("/api/updatePayment",auth,(req,res)=>{
 })
 router.post("/api/postback",(req,res)=>{
   var {accountID,payout,referredBy} = req.body
-  console.log(req.body)
   User.findOne({"accountID":accountID}).then((user)=>{
     if(user){
-      var totalEarned = user.totalEarned + (payout*0.8)
-      var amountUnpaid = user.amountUnpaid + (payout*0.8)
+      var totalEarned = user.totalEarned + (payout*user.payPercentage/100)
+      var amountUnpaid = user.amountUnpaid + (payout*user.payPercentage/100)
       User.update({"_id":user._id},{totalEarned,amountUnpaid}).then((success)=>{
         if(success){
-          console.log(success)
-          res.json(success)
+          User.findOne({"accountID":referredBy}).then((user)=>{
+            if(user){
+              var totalEarned = user.totalEarned + (payout*user.payPercentage/100)
+              var amountUnpaid = user.amountUnpaid + (payout*user.payPercentage/100)
+              var referralEarnings = user.referralEarnings + (payout*user.payPercentage/100)
+              User.update({"_id":user._id},{totalEarned,amountUnpaid,referralEarnings}).then((success)=>{
+                if(success){
+                  res.json(success)
+                }
+              })
+            }
+          })
         }
       })
-    }
+    }else res.json({error:"User does not exist"})
   })
-  User.findOne({"accountID":referredBy}).then((user)=>{
-    if(user){
-      var totalEarned = user.totalEarned + (payout*0.8)
-      var amountUnpaid = user.amountUnpaid + (payout*0.8)
-      var referralEarnings = user.referralEarnings + (payout*0.8)
-      User.update({"_id":user._id},{totalEarned,amountUnpaid,referralEarnings}).then((success)=>{
-        if(success){
-          res.json(success)
-        }
-      })
-    }
-  })
+  
 })
 
 router.get("/api/getProfile",auth,(req,res)=>{
@@ -325,7 +324,7 @@ router.post('/api/reset', (req, res) => {
       token = jwt.sign({ password: hashedPassword, email: email, date }, "streamers")
       // setup email data with unicode symbols
       const message = `<h4>Hi there</h4>
-            <p>You have successfully reset your password. Here is your new password for future reference: ${password}.</p>
+            <p>You have successfully reset your password. Here is your new password for future reference: <br /> <center> <h2> ${password} </h2>.</center></p>
             <p>Thank you!</p>
           `;
       const subject = "Password reset"

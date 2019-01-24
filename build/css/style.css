@@ -62,9 +62,13 @@ a{
 .nav-brand{
     font-family:open-sans2;
     font-size:1.5em;
-    padding-top:8px
 }
+.nav-brand img{
+    width:  25px !important;
+    display: inline-block !important;
+    margin-right: 10px
 
+}
 .commingsoon h1{
     font-size: 4em;
 }
@@ -337,7 +341,7 @@ color: #000;
 .navmodal a{
     color:#f7f7f7 !important;
     margin-top: 12px;
-    font-size: 1.5em;
+    font-size: 1.3em;
     float: left;
     padding-left: 5px;
 }
@@ -500,7 +504,7 @@ footer button.ask{
         padding: 70px 0px
     }
     .nav-brand{
-        padding-top:10px
+        /* padding-top:10px */
     }
     .request .ui.tag.label.label{
         display: none
@@ -598,4 +602,5 @@ footer button.ask{
     .epistle{
         font-size: 1.2em
     }
+   
 }
