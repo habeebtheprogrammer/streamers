@@ -185,8 +185,11 @@ router.post('/api/login', function (req, res, next) {
        }).catch((err)=>console.log(err))
     }else{
       bcrypt.hash(password, 10).then((hash) => {
+        var accountID;
+  User.find().sort({"_id":-1}).limit(1).then((arr)=>{
+  if(arr.length>0 ) accountID = parseInt(arr[0].accountID) +1; else accountID = 10000;
         User.create({
-        password:hash, username, email, profileDetails:{picture:imageUrl} ,referredBy:rID||null
+          accountID, password:hash, username, email, profileDetails:{picture:imageUrl} ,referredBy:rID||null
         })
           .then((user) => {
             if (user) {
@@ -207,6 +210,7 @@ router.post('/api/login', function (req, res, next) {
             }
           }).catch((error) => { console.log(error); res.json({ error: { "server": "An error has occured" } }); })
       })
+    })
     }
   })
 })
