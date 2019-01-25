@@ -275,7 +275,7 @@ router.post("/ogads/postback",(req,res)=>{
               var referralEarnings = user.referralEarnings + (payout*user.payPercentage/100)
               User.update({"_id":user._id},{totalEarned,amountUnpaid,referralEarnings}).then((success)=>{
                 if(success){
-                  res.json(success)
+                  res.json({success:true})
                 }
               })
             }
