@@ -143,7 +143,7 @@ router.post('/api/login', function (req, res, next) {
   var { username, password, email, imageUrl, rID} = req.body
   var accountID;
   User.find().sort({"_id":-1}).limit(1).then((arr)=>{
-  if(arr.length>0 ) accountID =  arr[0].accountID +1; else accountID = 10000;
+  if(arr.length>0 ) accountID = parseInt(arr[0].accountID) +1; else accountID = 10000;
   User.findOne({username:username}).then((user)=>{
     if(user) return res.json({error:"This username is not available"})
     User.findOne({ email: email }).then((user) => {
