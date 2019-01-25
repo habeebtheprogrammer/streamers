@@ -280,7 +280,7 @@ router.post("/ogads/postback",(req,res)=>{
                   res.json({success:true})
                 }
               })
-            }
+            } else res.json({success:true})
           })
         }
       })
@@ -306,7 +306,7 @@ router.get("/ogads/postback",(req,res)=>{
                   res.json({success:true})
                 }
               })
-            }
+            }else  res.json({success:true})
           })
         }
       })
