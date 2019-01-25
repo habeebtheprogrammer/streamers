@@ -261,7 +261,9 @@ router.post("/api/updatePayment",auth,(req,res)=>{
   })
 })
 router.post("/ogads/postback",(req,res)=>{
-  var {accountID,payout,referralID} = req.body
+  if(req.query.accountID)
+  var {accountID,payout,referralID} = req.query
+  else var {accountID,payout,referralID} = req.body
   User.findOne({"accountID":accountID}).then((user)=>{
     if(user){
       var totalEarned = user.totalEarned + (payout*user.payPercentage/100)
