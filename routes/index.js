@@ -256,15 +256,15 @@ router.post("/api/updatePayment",auth,(req,res)=>{
     else res.json({error:"An error has occured. please try again later"})
   })
 })
-router.post("/api/postback",(req,res)=>{
-  var {accountID,payout,referredBy} = req.body
+router.post("/ogads/postback",(req,res)=>{
+  var {accountID,payout,referralID} = req.body
   User.findOne({"accountID":accountID}).then((user)=>{
     if(user){
       var totalEarned = user.totalEarned + (payout*user.payPercentage/100)
       var amountUnpaid = user.amountUnpaid + (payout*user.payPercentage/100)
       User.update({"_id":user._id},{totalEarned,amountUnpaid}).then((success)=>{
         if(success){
-          User.findOne({"accountID":referredBy}).then((user)=>{
+          User.findOne({"accountID":referralID}).then((user)=>{
             if(user){
               var totalEarned = user.totalEarned + (payout*user.payPercentage/100)
               var amountUnpaid = user.amountUnpaid + (payout*user.payPercentage/100)
