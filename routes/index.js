@@ -288,6 +288,32 @@ router.post("/ogads/postback",(req,res)=>{
   })
   
 })
+router.get("/ogads/postback",(req,res)=>{
+  var {accountID,payout,referralID} = req.query
+  User.findOne({"accountID":accountID}).then((user)=>{
+    if(user){
+      var totalEarned = user.totalEarned + (payout*user.payPercentage/100)
+      var amountUnpaid = user.amountUnpaid + (payout*user.payPercentage/100)
+      User.update({"_id":user._id},{totalEarned,amountUnpaid}).then((success)=>{
+        if(success){
+          User.findOne({"accountID":referralID}).then((user)=>{
+            if(user){
+              var totalEarned = user.totalEarned + (payout*user.payPercentage/100)
+              var amountUnpaid = user.amountUnpaid + (payout*user.payPercentage/100)
+              var referralEarnings = user.referralEarnings + (payout*user.payPercentage/100)
+              User.update({"_id":user._id},{totalEarned,amountUnpaid,referralEarnings}).then((success)=>{
+                if(success){
+                  res.json({success:true})
+                }
+              })
+            }
+          })
+        }
+      })
+    }else res.json({error:"User does not exist"})
+  })
+  
+})
 
 router.get("/api/getProfile",auth,(req,res)=>{
   User.findById(req.userID).then((user)=>{
