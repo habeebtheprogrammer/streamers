@@ -323,7 +323,23 @@ router.get("/api/getProfile",auth,(req,res)=>{
     else res.json({error:"An error has occured. please try again later"})
   })
 })
-
+.post("/api/payment_successful", (req, res, next) => {
+  const {token} = req.body;
+  const userData = jwt.verify(token, "streamers")
+  if (userData) {
+    var {accountID,amountPaid} =userData;
+    User.findOne({accountID}).then((user)=>{
+      if(user){
+        var amountUnpaid = user.amountUnpaid - amountPaid
+        User.update({accountID},{amountUnpaid}).then((success)=>{
+          if(success){
+            res.json({success:true})
+          }
+        })
+      }else  res.json({success:false})
+    })
+  }
+})
 router.get("/api/getUser",(req,res)=>{
   User.findOne({username:req.query.username}).then((user)=>{
     if(user){
