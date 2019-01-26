@@ -8,6 +8,7 @@ var jwt = require('jsonwebtoken');
 var formidable = require('formidable');
 var cloudinary = require("cloudinary")
 var dotenv = require('dotenv')
+var request = require("request");
 var axios = require('axios')
 dotenv.config();
 
@@ -322,6 +323,94 @@ router.get("/api/getProfile",auth,(req,res)=>{
     }
     else res.json({error:"An error has occured. please try again later"})
   })
+})
+.post("/api/pay",(req,res,next)=>{
+  const {token} = req.body;
+  const userData = jwt.verify(token, "streamers")
+  const options = {
+    "strictSSL": false,
+    "url": "https://api.sandbox.paypal.com/v1/oauth2/token",
+    "method": "POST",
+    "auth": {
+      "user": "Ad3N5ty33kuwM9hRrFR-qmUrek-R33Va6DukqEhHuYvCh0ZJ_B86Zu_UU8kymDdy9cDMLz8-Zqb2gm7t",
+      "pass": "EMjHHYJR8oiR6a3jBtw_Oy0u0bkJ9EPu8HWHXOjY4E1paazj3gAspd1FGaBzaf3cxGjB7ifx5My5stKC",
+      "sendImmediately": true
+    },
+    "headers": {
+      "Accept": "application/json",
+      "Accept-Language": "en_US",
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    "form": {
+      "grant_type": "client_credentials"
+    }
+  };
+  request(options, (error, response, body) => {
+    
+    /* Print the error if one occurred */
+    if(error) {
+      res.json({error:"Could not connect to paypal"})
+    }
+    /* Print the response status code if a response was received */
+    else if(response.statusCode == 200){
+
+      var  access_token = JSON.parse(body).access_token;
+ 
+      const batchID = generator.generate({
+        length: 10,
+        numbers: true,
+        exclude: ''
+      });
+      const payOption = {
+        "strictSSL": false,
+        "url": "https://api.sandbox.paypal.com/v1/payments/payouts",
+        "method": "POST",
+        "headers": {
+          "Accept": "application/json",
+          "Authorization": `Bearer ${access_token}`,
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "sender_batch_header": {
+            "email_subject": "You have a payment",
+            "sender_batch_id": batchID
+          },
+          "items": [
+            {
+              "recipient_type": "EMAIL",
+              "amount": {
+                "value": userData.amountPaid,
+                "currency": "USD"
+              },
+              "receiver":  userData.paypalEmail,
+              "note": "Payouts sample transaction",
+              "sender_item_id": batchID
+            },
+          
+          ]
+        },
+        "json": true
+      };
+      request(payOption, (error, response, body) => {
+        /* Print the error if one occurred */
+      if(error) res.json({error:"An error has occured"})
+      else if(body.links){
+        User.findOne({accountID:userData.accountID}).then((user)=>{
+          if(user){
+            var amountUnpaid = user.amountUnpaid - userData.amountPaid
+            User.update({accountID:userData.accountID},{amountUnpaid}).then((success)=>{
+              if(success){
+              res.json({success: "Payment was successful"})
+              }
+            })
+          }else  res.json({success:false})
+        })
+      }else res.json({error:"Cannot perfom this action"})
+      });
+    };
+  
+    /* Print the response body */
+  });
 })
 .post("/api/payment_successful", (req, res, next) => {
   const {token} = req.body;
