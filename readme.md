@@ -12,3 +12,8 @@
 #after youre done making changes to the react frontend. use this command to create a new build
 #npm run build
 #move the build folder to streamjar server folder and redeploy the server
+
+#changing paypal client id and client secret
+#locate ./routes/index.js
+#locate /api/pay
+#change the user and pass to your live/sandbox paypal client id and client secret respectively

@@ -332,8 +332,8 @@ router.get("/api/getProfile",auth,(req,res)=>{
     "url": "https://api.sandbox.paypal.com/v1/oauth2/token",
     "method": "POST",
     "auth": {
-      "user": "Ad3N5ty33kuwM9hRrFR-qmUrek-R33Va6DukqEhHuYvCh0ZJ_B86Zu_UU8kymDdy9cDMLz8-Zqb2gm7t",
-      "pass": "EMjHHYJR8oiR6a3jBtw_Oy0u0bkJ9EPu8HWHXOjY4E1paazj3gAspd1FGaBzaf3cxGjB7ifx5My5stKC",
+      "user": "AShP0d3o3t7Y_e3-ZmuiSbY2QTe4O24gyYhx6Q0BPFGtZeIxHQCEPWIdKBE7J5IxKTao0ztAfD41OqJB",
+      "pass": "EPWIDegTxD-Owxd2vL7KnhVvRmynB2YPTr5MDEug8ASkYmA0qWJCcRigq_GhoVpOXV0KlODa5OmtfCOP",
       "sendImmediately": true
     },
     "headers": {
