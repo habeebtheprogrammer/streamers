@@ -476,30 +476,17 @@ router.post('/api/reset', (req, res) => {
   }
   );
 })
-  .post('/api/uploadPictures', (req, res, next) => {
-    var newform = new formidable.IncomingForm();
-    newform.keepExtensions = true;
-    newform.parse(req, (err, fields, files) => {
-      if (files.picture)
-        cloudinary.uploader.upload(files.picture.path, function (result) {
-          if (result.url) {
-            let userData = jwt.decode(fields.token)
-            let time = new Date();
-            var ulimit = files.picture.size/1000000;
-            console.log(ulimit)
-            User.update({ _id: userData.id }, { $inc: { uploadCounter: +ulimit } }).then((succ)=>console.log(succ))
-            Post.findOneAndUpdate({username:userData.username},{$addToSet:{content:{
-              type: "image",
-              userID: userData.id,
-              imgUrl: result.url,
-              date: time,
-              description: fields.description
-            }}
-          }).then((success) => { if(success)res.json({ url: result.url, success: "uploaded successfully" }) }).catch((err)=>console.log(err))
-          } else {
-            res.json({ error: "Error uploading the image" }); console.log("error uploading to cloudinary")
-          }
-        }); else res.json({ error: "Please choose an image to upload" });
+.post('/api/uploadDp',auth,(req, res, next) => {
+  var newform = new formidable.IncomingForm();
+  newform.keepExtensions = true;
+  newform.parse(req, (err, fields, files) => {
+    cloudinary.uploader.upload(files.dp.path, function (result) {
+        if (result.secure_url) {
+          User.findByIdAndUpdate(req.userID,  {"profileDetails.picture": result.secure_url}).then((success) => { res.status(200).json({ dpUrl: result.secure_url }); })
+        } else {
+          res.status(200).json({ error: "Error uploading to cloudinary" }); console.log("error uploading to cloudinary")
+        }
     })
   })
+})
 module.exports = router;
